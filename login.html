@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+  <meta charset="UTF-8">
+
+  <title>Log-in - CodePen</title>
+
+  <link rel='stylesheet' href='http://codepen.io/assets/libs/fullpage/jquery-ui.css'>
+
+    <link rel="stylesheet" href="css/style.css" media="screen" type="text/css" />
+<script type="text/javascript">
+  function user_login()
+  {
+    var uname = $("#user").val();
+    var passw = $("#pwd").val();
+    $.post("login.php",{user:uname, pwd:passw},function(result){
+      var output = jQuery.parseJSON( result );
+      if(output.stat == 1 )
+      {
+        $(location).attr('href',"login_success.php");
+      }
+    $("#error_msg").html(output.dataval);
+    });
+  }
+
+</script>
+</head>
+
+<body>
+
+  <div class="login-card">
+    <h1>Log-in</h1><br>
+  <form action="javascript:user_login()">
+    <input id='user' type="text" name="user" placeholder="Username" required>
+    <input id='pwd' type="password" name="pass" placeholder="Password" required>
+    <input type="submit" name="login" class="login login-submit" value="login" required>
+  </form>
+
+  <div class="login-help">
+    <a href="register.html">Register</a> 
+  </div>
+  <div id ="error_msg" style="color:#FF6666" align="center"></div>
+</div>
+
+<!-- <div id="error"><img src="https://dl.dropboxusercontent.com/u/23299152/Delete-icon.png" /> Your caps-lock is on.</div> -->
+
+  <script src='http://codepen.io/assets/libs/fullpage/jquery_and_jqueryui.js'></script>
+
+</body>
+
+</html>
