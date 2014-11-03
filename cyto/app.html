@@ -35,8 +35,9 @@
 		  }
 		  function redirect_new_graph()
 		  {
-		  	$(location).attr('href',"new_graph.html");
+		  	$(location).attr('href',"save_graph.html");
 		  }
+
 		</script>
 
 		<style>
@@ -47,10 +48,10 @@
 
 			#cy {
 				width: 100%;
-				height: 100%;
+				height: 70%;
 				position: absolute;
 				left: 0;
-				top: 0;
+				top: 30%;
 				z-index: 999;
 			}
 
@@ -127,9 +128,16 @@
 							content: '<span class="fa fa-star fa-2x"></span>',
 							select: function(){
 								console.log( this.data('name') );
+								//cy.remove(this);
 							}
 						},
 
+						{
+							content: 'Text',
+							select: function(){
+								console.log( this.position() );
+							}
+						},
 						{
 							content: 'Text',
 							select: function(){
@@ -147,8 +155,8 @@
 
 	<body>
 		<div id='user_logged'> </div>
-		<div id='save_graph'>
-		<button type="button" class="btn btn-success" onclick="redirect_new_graph()">Import New</button>
+		<div>
+		<button id='save_graph' type="button" class="btn btn-success" onclick="redirect_new_graph()">Import New</button>
 		</div>
 		<h1>cytoscape-cxtmenu demo</h1>
 

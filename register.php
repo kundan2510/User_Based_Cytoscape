@@ -25,6 +25,7 @@
          "pwd" => $pwd, 
          "email" => $email
          );
+         $_SESSION['user'] = $user;
          $collection->insert($document);
         $data = "User Registered";
          $stat = 1;
