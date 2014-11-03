@@ -1,9 +1,10 @@
 <?php
 	session_start();
-	if(!isset($_SESSION['user']))
+	if(isset($_SESSION['user']))
 	{
 	   $m = new MongoClient();
-	   $user = $_POST['user'];
+	   $user = $_SESSION['user'];
+	   $db = $m->cs252;
 	   $collection = $db->graph_details;
 		$graph_data = $_POST['g_data'];
 		$graph_style = $_POST['g_style'];
@@ -17,7 +18,7 @@
 		$collection->insert($document);
 		$collection = $db->user_graph;
 		$document = array( 
-			 "user" => $_SESSION['user'],
+			 "user" => $user,
 	         "name" => $graph_name
 	         );
 		$collection->insert($document);
@@ -29,5 +30,6 @@
 	{
 		$data = "Error";
 		$stat = 0;
+		echo json_encode(array('dataval' => $data, 'stat' => $stat ));
 	}
 ?>
