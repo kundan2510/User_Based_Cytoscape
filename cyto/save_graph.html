@@ -6,7 +6,51 @@
 <head>
 	<script src="http://code.jquery.com/jquery-2.0.3.min.js"> </script>
 	<script src="../bootstrap/js/bootstrap.min.js"> </script>
+
 	<link href="../bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+
+	<script type="text/javascript">
+	function save_graph_db()
+	{
+		//$('#g_name').html();
+		//$('#g_data').val(JSON.stringify(graph_data));
+		//$('#g_style').val(JSON.stringify(graph_style));
+
+		///alert(eval(name));
+
+		var nam = $("#g_name").val();
+		var gdata =jQuery.parseJSON($("#g_data").val());
+		var gstyle = jQuery.parseJSON($("#g_style").val());
+		var nm = {name : nam};
+		var data_to_be_sent = new Object();
+		data_to_be_sent.g_data = gdata;
+		data_to_be_sent.g_style = gstyle;
+		data_to_be_sent.g_name = nm;
+		//var data_tb_sent = JSON.stringify(data_to_be_sent);
+
+		$.post("save_graph.php",data_to_be_sent,function(result){
+      var output = jQuery.parseJSON( result );
+       if(output.stat == 0 )
+          {
+            $(location).attr('href',"../login.html");
+          }
+        $("#success_msg").html(output.dataval);
+    });
+  }
+	</script>
+
+	<style>
+			
+			#g_name {
+				width: 100%;
+				z-index: 999;
+			}
+
+			textarea {
+				width: 100%;
+				z-index: 999;
+			}
+		</style>
 </head>
 
 
@@ -14,8 +58,23 @@
 
 <body>
 		<div id='user_logged'> </div>
-		<div>
-		<button id='save_graph' type="button" class="btn btn-success" onclick="redirect_new_graph()">Import New</button>
+		<div class="container">
+		<form action="javascript:save_graph_db()" role="form" class="form-inline">
+			<div class="form-group">
+                <label for="code">Graph Name</label>
+                <textarea id = 'g_name' class="form-control input-lg" rows="1" placeholder="Enter Graph name" required></textarea>
+            </div>
+            <div class="form-group">
+                <label for="code">Graph Data</label>
+                <textarea id = 'g_data' class="form-control input-lg"rows="10" placeholder="Enter Graph data in json" required></textarea>
+            </div>
+            <div class="form-group">
+                <label for="code">Graph Style</label>
+                <textarea id = 'g_style' class="form-control input-lg"rows="10" placeholder="Enter Graph style in json" required></textarea>
+            </div>
+			<button type="submit" class="btn btn-default">Save Graph</button>
+		</form>
+		<div id='success_msg' style="color:#009900" align="center"></div>
 		</div>
 </body>
 
