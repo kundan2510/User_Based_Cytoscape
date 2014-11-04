@@ -6,7 +6,7 @@
 		<title>cytoscape-cxtmenu.js demo</title>
 
 		<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1, maximum-scale=1">
-
+		<meta charset="UTF-8">
 		<link href="font-awesome-4.0.3/css/font-awesome.css" rel="stylesheet" type="text/css" />
 		
 		<script src="http://code.jquery.com/jquery-2.0.3.min.js"></script>
@@ -20,25 +20,152 @@
 
 		<script>
 		function user_login()
-		  {
-		    $.post("login_success.php",function(result){
-		      var output = jQuery.parseJSON( result );
-		      if(output.stat == 1 )
-		      {
-		        $('#user_logged').html("<h3>"+output.user+"</h3>");
-		      }
-		      else
-		      {
-		      	$(location).attr('href',"../login.html");
-		      }
-		    });
-		  }
-		  function redirect_new_graph()
-		  {
-		  	$(location).attr('href',"save_graph.html");
-		  }
+		{
+			$.post("login_success.php",function(result){
+				var output = jQuery.parseJSON( result );
+				if(output.stat == 1 )
+				{
+					$('#user_logged').html("<h3>"+output.user+"</h3>");
+				}
+				else
+				{
+					$(location).attr('href',"../login.html");
+				}
+			});
+		}
+		function redirect_new_graph()
+		{
+			$(location).attr('href',"save_graph.html");
+		}
+		function add_new_node() 
+		{
+			var node_id1 = document.getElementById('node_id1').value;
+			var node_key1 = document.getElementById('node_key1').value;
 
+			var searchEles = document.getElementById("add_new_nodes_inputs").children;
+			var id_array = [];
+			var key_array = [];
+
+			for(var i = 0; i < searchEles.length; i++) 
+			{
+			    if(searchEles[i].tagName == 'INPUT') 
+			    {
+			        if(searchEles[i].id.indexOf('node_id') == 0) 
+			        {
+			            id_array.push(searchEles[i]);
+			        }
+			        if(searchEles[i].id.indexOf('node_key') == 0) 
+			        {
+			            key_array.push(searchEles[i]);
+			        }
+			    }
+			}
+
+			var node_data = {};
+			node_data[node_id1] = node_key1;
+			for(var i = 0; i < id_array.length; i++)
+			{
+				node_data[id_array[i].value] = key_array[i].value;
+			}
+			var node_data_json = JSON.stringify(node_data);
+			//alert(node_data_json);
+
+			var node_position = {};
+			node_position["x"] = 400;
+			node_position["y"] = 120;
+			var node_position_json = JSON.stringify(node_position);
+			//alert(node_position_json);
+
+
+			var node_complete = {};
+			node_complete['group'] = 'nodes';
+			node_complete['data'] = node_data;
+			node_complete['position'] = node_position;
+			//var node_complete_json = JSON.stringify(node_complete);
+			//alert(node_complete_json);
+
+			var eles =  cy.add(node_complete
+			//JSON.parse(node_complete_json)
+			// ,{ group: "edges", data: { id: "e6878", source: "n0", target: "n1" } }
+			);
+
+			//alert(JSON.stringify(eles));
+			
+			if ( eles != null )
+			{
+				var data_to_be_sent = new Object();
+				data_to_be_sent.node_complete = node_complete;
+				data_to_be_sent.graph = "abcd";
+
+				$.post("app.php",data_to_be_sent,function(result)
+				{
+					var output = jQuery.parseJSON( result );
+					if(output.stat == 0 )
+					{
+						$(location).attr('href',"../login.html");
+					}
+					else
+					{
+						//alert('Added to mongo');
+					}
+			       // $("#success_msg").html(output.dataval);
+			    });
+			}
+			else
+			{
+				alert('cyto error');
+			}
+
+
+			var j = cy.$('#'+node_key1);
+			//alert(j.id);
+			cy.animate({
+			  fit: {
+			    eles: j,
+			    padding: 90
+			  }
+			}, {
+			  duration: 1000
+			});
+
+			// cy.animate(
+			// {
+			// 	pan: { x: 100, y: 120 },
+			// 	zoom: 2
+			// },
+			// {
+			// 	duration: 10000
+			// });
+
+			
+		}
+
+
+		$(document).ready(function() {
+		    var max_fields      = 10; //maximum input boxes allowed
+		    var wrapper         = $(".input_fields_wrap"); //Fields wrapper
+		    var add_button      = $("#add_field_button"); //Add button ID
+		   
+		    var x = 1; //initlal text box count
+		    $("#add_field_button").click(function(e){ //on add input button click
+		    	//alert(x);
+		        e.preventDefault();
+		        if(x < max_fields){ //max input box allowed
+		            x++; //text box increment
+		           // $(wrapper).append('<div><input type="text" name="mytext[]"/><input type="text" name="mytext[]"/><a href="#" class="remove_field">Remove</a></div>'); //add input box
+
+
+		            $(wrapper).append('<label for="node_id'+x+'">ID '+x+'</label><input type="text" class="form-control" placeholder="Id '+x+' ..." id="node_id'+x+'" name="node_id'+x+'"><label for="node_key'+x+'">Key '+x+'</label><input type="text" class="form-control" placeholder="Key '+x+' ..." id="node_key'+x+'"><a href="#" class="remove_field">Remove</a>');
+		        }
+		    });
+		   
+		    $(wrapper).on("click",".remove_field", function(e){ //user click on remove text
+		        e.preventDefault(); $(this).parent('div').remove(); x--;
+		    })
+		});
 		</script>
+
+
 
 		<style>
 			body {
@@ -48,10 +175,10 @@
 
 			#cy {
 				width: 100%;
-				height: 70%;
+				height: 40%;
 				position: absolute;
 				left: 0;
-				top: 30%;
+				top: 600px;
 				z-index: 999;
 			}
 
@@ -133,15 +260,17 @@
 						},
 
 						{
-							content: 'Text',
+							content: 'Position',
 							select: function(){
+								//alert(this.id());
 								console.log( this.position() );
 							}
 						},
 						{
-							content: 'Text',
+							content: 'All Data',
 							select: function(){
-								console.log( this.position() );
+								//alert(this.id());
+								console.log( this.data() );
 							}
 						}
 					]
@@ -151,13 +280,55 @@
 		</script>
 
 
+
+
 	</head>
 
 	<body>
 		<div id='user_logged'> </div>
-		<div>
+		<div class = "navbar-static-top" id='menu_bar'>
 		<button id='save_graph' type="button" class="btn btn-success" onclick="redirect_new_graph()">Import New</button>
+
+
+	<form id="add_node_form" action="javascript:add_new_node()" name="add_node_form" style="width:50%">
+        <div class="form-group">
+            <label for="node_id1">ID 1</label><input type="text" class="form-control" placeholder="Id 1 ..." id="node_id1" name="node_id1"></br>
+            <label for="node_key1">Key 1</label><input type="text" class="form-control" placeholder="Key 1 ..." id="node_key1"></br>
+            <div class="input_fields_wrap" id="add_new_nodes_inputs">
+			    <input type="button" id="add_field_button" name="add_field_button" value="Add More Fields"></br>
+			    
+			</div>
+        </div>
+         <button type="submit" class="btn btn-default">Submit</button></br> 
+    </form>
+
+	<!--<div class="popover-markup"> <a href="#" class="trigger">Popover link</a> 
+	    <div class="head hide">Add Node</div>
+	    <div class="content hide">
+
+	    </div>
+	    <div class="footer hide">test</div>
+	</div>-->
+
+
+<script type="text/javascript">
+	$('.popover-markup>.trigger').popover({
+    html: true,
+    title: function () {
+        return $(this).parent().find('.head').html();
+    },
+    content: function () {
+        return $(this).parent().find('.content').html();
+    }
+});
+	//alert('df');
+	</script>
+
+
 		</div>
+
+
+
 		<h1>cytoscape-cxtmenu demo</h1>
 
 		<div id="cy"></div>
