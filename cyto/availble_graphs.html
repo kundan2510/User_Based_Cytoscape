@@ -1,0 +1,42 @@
+<!DOCTYPE>
+
+<html>
+
+
+<head>
+	<script src="http://code.jquery.com/jquery-2.0.3.min.js"> </script>
+	<script src="../bootstrap/js/bootstrap.min.js"> </script>
+
+	<link href="../bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+
+	<script>
+	function get_graph_list()
+	  {
+	    $.post("available_graph.php",function(result){
+	      var output = jQuery.parseJSON( result );
+	      if(output.stat == 1 )
+	      {
+	        $('#available_graphs').html(output.dataval);
+	      }
+	      else
+	      {
+	      	alert("something went wrong! :(");
+	      	$(location).attr('href',"../login.html");
+	      }
+	    });
+	  }
+
+	  $(document).ready(get_graph_list());
+
+	</script>
+
+
+
+</head>
+
+<body>
+<div class='container'>
+<div id="available_graphs"></div>
+</div>
+</body>
+</html>

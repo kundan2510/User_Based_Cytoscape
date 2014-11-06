@@ -1,0 +1,15 @@
+[
+	{
+		"selector": "node",
+		"css": {
+			"content": "data(name)"
+		}
+	},
+
+	{
+		"selector": "edge",
+		"css": {
+			"target-arrow-shape": "triangle"
+		}
+	}
+]
