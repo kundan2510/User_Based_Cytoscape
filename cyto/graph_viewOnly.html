@@ -111,10 +111,32 @@
 			{
 				alert("hello")
 			}
+			function add_data_to_form(node)
+			{
+				var input_fields = "";
+				jQuery.each(node.data(), function(i, val) {
+					  input_fields += '<label for="'+i+'">'+ i +'</label>'+
+					  					'<input type="text" name="'+i+'" id="'+i+'" value="'+val+'" class="text ui-widget-content ui-corner-all"/>';
+					});
+
+
+				var f_data = '<fieldset>'+
+									input_fields +
+									// <label for="email">Email</label>
+									// <input type="text" name="email" id="email" value="jane@smith.com" class="text ui-widget-content ui-corner-all">
+									// <label for="password">Password</label>
+									// <input type="password" name="password" id="password" value="xxxxxxx" class="text ui-widget-content ui-corner-all">
+
+									// <!-- Allow form submission with keyboard without duplicating the dialog button -->
+									'<input type="submit" tabindex="-1" style="position:absolute; top:-1000px">'+
+								'</fieldset>';
+							$( "#d_form" ).html(f_data);
+			}
 
 			$(function(){
 				//alert(JSON.stringify(graph_data));
-				 
+				 var mod_node = {};
+				 var form;
 						
 				 var dialog = $( "#dialog-form" ).dialog({
 										autoOpen: false,
@@ -129,7 +151,7 @@
 										},
 										close: function() {
 											form[ 0 ].reset();
-											allFields.removeClass( "ui-state-error" );
+											//allFields.removeClass( "ui-state-error" );
 										}
 									});
 
@@ -137,6 +159,7 @@
 									event.preventDefault();
 									show_data();
 								});
+				 
 
 
 				var graph_data ;
@@ -181,6 +204,7 @@
 							select: function(){
 								console.log( this.data('name') );
 								//cy.remove(this);
+								
 							}
 						},
 
@@ -189,6 +213,8 @@
 							select: function(){
 								var pos = this.position();
 								//$( "#dialog-confirm" ).show();
+								mod_node = this;
+								add_data_to_form(this);
 								dialog.dialog( "open" );
 
 							}
@@ -218,23 +244,9 @@
 		<div>
 		<button id='save_graph' type="button" class="btn btn-success" onclick="redirect_new_graph()">Import New</button>
 		</div>
-		<div id="dialog-form" title="Create new user">
-	<p class="validateTips">All form fields are required.</p>
-
-	<form>
-		<fieldset>
-			<label for="name">Name</label>
-			<input type="text" name="name" id="name" value="Jane Smith" class="text ui-widget-content ui-corner-all">
-			<label for="email">Email</label>
-			<input type="text" name="email" id="email" value="jane@smith.com" class="text ui-widget-content ui-corner-all">
-			<label for="password">Password</label>
-			<input type="password" name="password" id="password" value="xxxxxxx" class="text ui-widget-content ui-corner-all">
-
-			<!-- Allow form submission with keyboard without duplicating the dialog button -->
-			<input type="submit" tabindex="-1" style="position:absolute; top:-1000px">
-		</fieldset>
-	</form>
-</div>
+		<div id="dialog-form" title="Modify node">
+		<form id ="d_form"></form>
+		</div>
 
 
 		<h1>cytoscape-cxtmenu demo</h1>
