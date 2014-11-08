@@ -2,7 +2,7 @@
 
   var defaults = {
     menuRadius: 100, // the radius of the circular menu in pixels
-    selector: 'node',// elements matching this Cytoscape.js selector will trigger cxtmenus
+    selector: 'edge',// elements matching this Cytoscape.js selector will trigger cxtmenus
     //selector: 'edge',
     commands: [ // an array of commands to list in the menu
       /*
@@ -31,7 +31,7 @@
   var register = function( cytoscape, $ ){
     if( !cytoscape ){ return; } // can't register if cytoscape unspecified
 
-    cytoscape('core', 'cxtmenu', function(params){
+    cytoscape('core', 'cxtmenu2', function(params){
       var options = $.extend(true, {}, defaults, params);
       var fn = params;
       var cy = this;
@@ -54,7 +54,7 @@
         options: options,
         handlers: []
       };
-      var $wrapper = $('<div class="cxtmenu"></div>'); data.$container = $wrapper;
+      var $wrapper = $('<div class="cxtmenu2"></div>'); data.$container = $wrapper;
       var $parent = $('<div></div>');
       var $canvas = $('<canvas></canvas>');
       var c2d = $canvas[0].getContext('2d');
@@ -99,7 +99,7 @@
 
         // console.log(rx1, ry1, theta1, theta2)
 
-        var $item = $('<div class="cxtmenu-item"></div>');
+        var $item = $('<div class="cxtmenu2-item"></div>');
         $item.css({
           color: options.itemColor,
           cursor: 'default',
@@ -117,7 +117,7 @@
           marginTop: -ry1 -r * 0.33
         });
         
-        var $content = $('<div class="cxtmenu-content">' + command.content + '</div>');
+        var $content = $('<div class="cxtmenu2-content">' + command.content + '</div>');
         $content.css({
           'width': r * 0.66,
           'height': r * 0.66,
@@ -396,7 +396,7 @@
   }
 
   if( typeof define !== 'undefined' && define.amd ){ // expose as an amd/requirejs module
-    define('cytoscape-cxtmenu', function(){
+    define('cytoscape-cxtmenu2', function(){
       return register;
     });
   }
