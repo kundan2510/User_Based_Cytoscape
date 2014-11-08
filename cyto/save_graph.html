@@ -34,11 +34,50 @@
           {
             $(location).attr('href',"../login.html");
           }
-        $("#success_msg").html(output.dataval);
-        $("#g_data").val("");
-        $("#g_style").val("");
-        $("#g_name").val("");
+       // $("#success_msg").html(output.dataval);
+        $("#g_data").val(JSON.stringify(output.g_data));
+        //$("#g_style").val(JSON.stringify(output.g_data));
+        //$("#g_name").val("");
     });
+
+
+		/*$.ajax({
+                type: "POST",
+                url: "save_graph.php",
+                data: data_to_be_sent,
+                contentType: "application/json",
+                dataType: "json",
+                success: function (datav) {
+                    if (datav == undefined) {
+                        alert("Error : 219");
+                    }
+                    else {
+                    	/*var output = jQuery.parseJSON( datav );
+                        if(output.stat == 0 )
+				          {
+				            $(location).attr('href',"../login.html");
+				          }
+				          $("#success_msg").html(output.dataval);
+					        /*$("#g_data").val("");
+					        $("#g_style").val("");
+					        $("#g_name").val("");
+					        alert(datav);
+                    }
+                },
+                error: function (datav) {
+                    if (datav == undefined) {
+                        alert("Error : 465");
+                    }
+                    else {
+                    	/*var output = jQuery.parseJSON( datav );
+                        alert("Error : 468 " + output.stat);
+                        alert(datav);
+                    }
+                }
+            });*/
+
+
+
   }
 	</script>
 
