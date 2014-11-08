@@ -10,18 +10,27 @@
 		$graph_style = $_POST['g_style'];
 		$graph_name = $_POST['g_name'];
 		$document = array( 
-			 "gname" => $graph_name,
+			 "gname" => $graph_name['name'],
 	         "gdata" => $graph_data, 
 	         "gstyle" => $graph_style,
 	         "submitted_by" => $user
 	         );
 		$collection->insert($document);
-		$collection = $db->user_graph;
+
+		$collection = $db->user_graphs;
 		$document = array( 
 			 "user" => $user,
-	         "name" => $graph_name
+	         "gname" => $graph_name['name']
 	         );
 		$collection->insert($document);
+
+		/*$collection = $db->graph_names;
+		$document = array( 
+			 "gname" => $graph_name['name'],
+	         "submitted_by" => $user
+	         );
+		$collection->insert($document);*/
+
 		$data = "Successfully inserted the graph";
 		$stat = 1;
 		echo json_encode(array('dataval' => $data, 'stat' => $stat ));
