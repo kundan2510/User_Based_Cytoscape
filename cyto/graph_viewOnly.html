@@ -71,7 +71,10 @@
 
 		<script>
 
-			
+			var mod_node = {};
+			var mod_node_id,cy;
+			var dialog;
+
 			// var graph_data = {
 			// 			nodes: [
 			// 				{ data: { id: 'j', name: 'Jerry' } },
@@ -109,14 +112,22 @@
 
 			function show_data()
 			{
-				alert("hello")
+				alert("hello");
 			}
 			function add_data_to_form(node)
 			{
 				var input_fields = "";
 				jQuery.each(node.data(), function(i, val) {
-					  input_fields += '<label for="'+i+'">'+ i +'</label>'+
-					  					'<input type="text" name="'+i+'" id="'+i+'" value="'+val+'" class="text ui-widget-content ui-corner-all"/>';
+
+						if(!(i=="id"))
+						{
+						  input_fields += '<label for="'+i+'">'+ i +'</label>'+
+						  					'<input type="text" name="'+i+'" id="'+i+'" value="'+val+'" class="text ui-widget-content ui-corner-all"/>';
+						}
+						else
+						{
+							input_fields += '<p> Id of the node is ' + val +'. You can\'t modify this.</p>';
+						}
 					});
 
 
@@ -133,18 +144,31 @@
 							$( "#d_form" ).html(f_data);
 			}
 
+
+			function change_data()
+			{
+				var formData = new Object();
+				jQuery.each(mod_node.data(), function(i, val) {
+					  formData[i] = $('#'+i).val();
+					});
+				console.info(formData);
+				//var j = cy.$('#'+node_key1);
+				mod_node.data(formData);
+				dialog.dialog( "close" );
+				
+
+			}
 			$(function(){
 				//alert(JSON.stringify(graph_data));
-				 var mod_node = {};
 				 var form;
 						
-				 var dialog = $( "#dialog-form" ).dialog({
+				 dialog = $( "#dialog-form" ).dialog({
 										autoOpen: false,
 										height: 300,
 										width: 350,
 										modal: true,
 										buttons: {
-											"Show data": show_data,
+											"Show data": change_data,
 											Cancel: function() {
 												dialog.dialog( "close" );
 											}
@@ -157,7 +181,7 @@
 
 								form = dialog.find( "form" ).on( "submit", function( event ) {
 									event.preventDefault();
-									show_data();
+									change_data();
 								});
 				 
 
@@ -177,57 +201,58 @@
 			          	
 			          	graph_data = output.dataval.gdata;
 			          	graph_style = output.dataval.gstyle;
-			          	var cy = window.cy = cytoscape({
-					container: document.getElementById('cy'),
+			           cy = window.cy = cytoscape({
+					    container: document.getElementById('cy'),
 
-					ready: function(){
-							user_login();
+						ready: function(){
+								user_login();
 
-					},
-
-					style: graph_style,
-
-					elements: graph_data,
-				});
-
-				cy.cxtmenu({
-					commands: [
-						{
-							content: '<span class="fa fa-flash fa-2x"></span>',
-							select: function(){
-								console.log( this.id() );
-							}
 						},
 
-						{
-							content: '<span class="fa fa-star fa-2x"></span>',
-							select: function(){
-								console.log( this.data('name') );
-								//cy.remove(this);
-								
-							}
-						},
+						style: graph_style,
 
-						{
-							content: 'Modify',
-							select: function(){
-								var pos = this.position();
-								//$( "#dialog-confirm" ).show();
-								mod_node = this;
-								add_data_to_form(this);
-								dialog.dialog( "open" );
+						elements: graph_data,
+					});
 
+					cy.cxtmenu({
+						commands: [
+							{
+								content: '<span class="fa fa-flash fa-2x"></span>',
+								select: function(){
+									console.log( this.id() );
+								}
+							},
+
+							{
+								content: '<span class="fa fa-star fa-2x"></span>',
+								select: function(){
+									console.log( this.data('name') );
+									//cy.remove(this);
+									
+								}
+							},
+
+							{
+								content: 'Modify',
+								select: function(){
+									var pos = this.position();
+									//$( "#dialog-confirm" ).show();
+									mod_node = this;
+									mod_node_id = this.id();
+									add_data_to_form(this);
+									dialog.dialog( "open" );
+
+								}
+							},
+							{
+								content: 'Text',
+								select: function(){
+									console.log( this.position() );
+								}
 							}
-						},
-						{
-							content: 'Text',
-							select: function(){
-								console.log( this.position() );
-							}
-						}
-					]
-				});
-			          }
+						]
+					});
+				          }
 			        
 			    });
 
