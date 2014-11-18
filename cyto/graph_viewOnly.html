@@ -18,6 +18,7 @@
 		<!--<script src="../cytoscape.js/build/cytoscape.js"></script>-->
 
 		<script src="cytoscape-cxtmenu.js"></script>
+		<script src="cytoscape-cxtmenu2.js"></script>
 		<link rel="stylesheet" href="//code.jquery.com/ui/1.11.2/themes/smoothness/jquery-ui.css">
 
 		<script>
@@ -141,6 +142,7 @@
 									// <!-- Allow form submission with keyboard without duplicating the dialog button -->
 									'<input type="submit" tabindex="-1" style="position:absolute; top:-1000px">'+
 								'</fieldset>';
+
 							$( "#d_form" ).html(f_data);
 			}
 
@@ -252,7 +254,50 @@
 							}
 						]
 					});
-				          }
+
+
+
+					cy.cxtmenu2({
+						commands: [
+							{
+								content: '<span class="fa fa-flash fa-2x"></span>',
+								select: function(){
+									console.log( this.id() );
+								}
+							},
+
+							{
+								content: '<span class="fa fa-star fa-2x"></span>',
+								select: function(){
+									console.log( this.data('name') );
+									//cy.remove(this);
+									
+								}
+							},
+
+							{
+								content: 'Modify',
+								select: function(){
+									var pos = this.position();
+									//$( "#dialog-confirm" ).show();
+									mod_node = this;
+									mod_node_id = this.id();
+									add_data_to_form(this);
+									dialog.dialog( "open" );
+
+								}
+							},
+							{
+								content: 'Text',
+								select: function(){
+									console.log( this.position() );
+								}
+							}
+						]
+					});
+
+
+				   }
 			        
 			    });
 
