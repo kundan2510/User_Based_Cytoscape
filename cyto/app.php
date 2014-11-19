@@ -21,15 +21,10 @@
 
 		if( $operation_type == "counter_query" ) 
 		{
+			$counter = 0;
 			$counter = $collection->count();
-			if ( $counter > 0 )
+			if ( $counter >= 0 )
 			{
-				/*$collection = $db->user_graph;
-				$document = array( 
-					 "user" => $user,
-			         "name" => $graph_name
-			         );
-				$collection->insert($document);*/
 				$data = "Successfully returned counter of the graph";
 				$stat = $counter;
 			}

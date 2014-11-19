@@ -23,7 +23,7 @@
 			 "user" => $user,
 	         "gname" => $graph_name['name']
 	         );
-		$collection->insert((string)$document);
+		$collection->insert($document);
 
 		/*$collection = $db->graph_names;
 		$document = array( 
@@ -34,8 +34,8 @@
 
 		$data = "Successfully inserted the graph ".$graph_name['name'];
 		$stat = 1;
-		//echo json_encode(array("dataval" => $data, "stat" => $stat ));
-		echo json_encode($_POST);
+		echo json_encode(array("dataval" => $data, "stat" => $stat ));
+		//echo json_encode($_POST);
 	}
 	else
 	{

@@ -19,7 +19,7 @@ session_start();
 	      $graph = array('gdata' => $document['gdata'],'gstyle' => $document['gstyle'] );
 	   }
 
-	   if ($flag == 1)
+	   if ($flag >= 1)
 	   {
 	   		$_SESSION['user'] = $user;
 	         //$data = json_encode($graph);

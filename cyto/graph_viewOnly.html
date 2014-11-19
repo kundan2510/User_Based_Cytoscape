@@ -6,7 +6,7 @@
 		<title>cytoscape-cxtmenu.js demo</title>
 
 		<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1, maximum-scale=1">
-
+		<meta charset="UTF-8">
 		<link href="font-awesome-4.0.3/css/font-awesome.css" rel="stylesheet" type="text/css" />
 		
 		<script src="http://code.jquery.com/jquery-2.0.3.min.js"></script>
@@ -21,60 +21,42 @@
 		<script src="cytoscape-cxtmenu2.js"></script>
 		<link rel="stylesheet" href="//code.jquery.com/ui/1.11.2/themes/smoothness/jquery-ui.css">
 
-		<script>
-		function user_login()
-		  {
-		    $.post("login_success.php",function(result){
-		      var output = jQuery.parseJSON( result );
-		      if(output.stat == 1 )
-		      {
-		        $('#user_logged').html("<h3>"+output.user+"</h3>");
-		      }
-		      else
-		      {
-		      	$(location).attr('href',"../login.html");
-		      }
-		    });
-		  }
-		  function redirect_new_graph()
-		  {
-		  	$(location).attr('href',"save_graph.html");
-		  }
+		<script src="graph_edit.js"></script>
 
+		<link href="app_basic.css" rel="stylesheet" type="text/css" />
+
+
+
+		<script>
+		$(document).ready(function() {
+		    var max_fields      = 10; //maximum input boxes allowed
+		    var wrapper         = $(".input_fields_wrap"); //Fields wrapper
+		    var add_button      = $("#add_field_button"); //Add button ID
+		   
+		    var x = 1; //initlal text box count
+		    $("#add_field_button").click(function(e){ //on add input button click
+		    	//alert(x);
+		        e.preventDefault();
+		        if(x < max_fields){ //max input box allowed
+		            x++; //text box increment
+		           // $(wrapper).append('<div><input type="text" name="mytext[]"/><input type="text" name="mytext[]"/><a href="#" class="remove_field">Remove</a></div>'); //add input box
+
+
+		            $(wrapper).append('<label for="node_id'+x+'">ID '+x+'</label><input type="text" class="form-control" placeholder="Id '+x+' ..." id="node_id'+x+'" name="node_id'+x+'"><label for="node_key'+x+'">Key '+x+'</label><input type="text" class="form-control" placeholder="Key '+x+' ..." id="node_key'+x+'"><a href="#" class="remove_field">Remove</a>');
+		        }
+		    });
+		   
+		    $(wrapper).on("click",".remove_field", function(e){ //user click on remove text
+		        e.preventDefault(); $(this).parent('div').remove(); x--;
+		    });
+		});
 		</script>
 
-		<style>
-			body {
-				font-family: helvetica;
-				font-size: 62.5%;
-			}
 
-			#cy {
-				width: 100%;
-				height: 70%;
-				position: absolute;
-				left: 0;
-				top: 50%;
-				z-index: 999;
-			}
 
-			h1 {
-				opacity: 0.5;
-				font-size: 1em;
-			}
-			label, input { display:block; }
-		input.text { margin-bottom:12px; width:95%; padding: .4em; }
-		fieldset { padding:0; border:0; margin-top:25px; }
-		h1 { font-size: 1.2em; margin: .6em 0; }
-		.ui-dialog .ui-state-error { padding: .3em; }
-		.validateTips { border: 1px solid transparent; padding: 0.3em; }
-		</style>
+
 
 		<script>
-
-			var mod_node = {};
-			var mod_node_id,cy;
-			var dialog;
 
 			// var graph_data = {
 			// 			nodes: [
@@ -111,80 +93,32 @@
 			// 			}
 			// 		];
 
-			function show_data()
-			{
-				alert("hello");
-			}
-			function add_data_to_form(node)
-			{
-				var input_fields = "";
-				jQuery.each(node.data(), function(i, val) {
-
-						if(!(i=="id"))
-						{
-						  input_fields += '<label for="'+i+'">'+ i +'</label>'+
-						  					'<input type="text" name="'+i+'" id="'+i+'" value="'+val+'" class="text ui-widget-content ui-corner-all"/>';
-						}
-						else
-						{
-							input_fields += '<p> Id of the node is ' + val +'. You can\'t modify this.</p>';
-						}
-					});
-
-
-				var f_data = '<fieldset>'+
-									input_fields +
-									// <label for="email">Email</label>
-									// <input type="text" name="email" id="email" value="jane@smith.com" class="text ui-widget-content ui-corner-all">
-									// <label for="password">Password</label>
-									// <input type="password" name="password" id="password" value="xxxxxxx" class="text ui-widget-content ui-corner-all">
-
-									// <!-- Allow form submission with keyboard without duplicating the dialog button -->
-									'<input type="submit" tabindex="-1" style="position:absolute; top:-1000px">'+
-								'</fieldset>';
-
-							$( "#d_form" ).html(f_data);
-			}
-
-
-			function change_data()
-			{
-				var formData = new Object();
-				jQuery.each(mod_node.data(), function(i, val) {
-					  formData[i] = $('#'+i).val();
-					});
-				console.info(formData);
-				//var j = cy.$('#'+node_key1);
-				mod_node.data(formData);
-				dialog.dialog( "close" );
-				
-
-			}
+			
 			$(function(){
-				//alert(JSON.stringify(graph_data));
-				 var form;
-						
-				 dialog = $( "#dialog-form" ).dialog({
-										autoOpen: false,
-										height: 300,
-										width: 350,
-										modal: true,
-										buttons: {
-											"Show data": change_data,
-											Cancel: function() {
-												dialog.dialog( "close" );
-											}
-										},
-										close: function() {
-											form[ 0 ].reset();
-											//allFields.removeClass( "ui-state-error" );
-										}
-									});
 
-								form = dialog.find( "form" ).on( "submit", function( event ) {
-									event.preventDefault();
-									change_data();
-								});
+				var form;		
+				dialog = $( "#dialog-form" ).dialog({
+						autoOpen: false,
+						height: 300,
+						width: 350,
+						modal: true,
+						buttons: {
+							"Update": change_data,
+							Cancel: function() {
+								dialog.dialog( "close" );
+							}
+						},
+						close: function() {
+							form[ 0 ].reset();
+							//allFields.removeClass( "ui-state-error" );
+						}
+					});
+
+					form = dialog.find( "form" ).on( "submit", function( event ) {
+					event.preventDefault();
+					change_data();
+				});
+
 				 
 
 
@@ -192,134 +126,86 @@
 			    var graph_style ;
 				var url = $(location).attr('href');
 				var name = url.split("?")[1].split("=")[1];
-				$.post("query_graph.php",{gname:name},function(result){
-			      var output = jQuery.parseJSON( result );
-			       if(output.stat == 0 )
-			          {
-			            $(location).attr('href',"../login.html");
-			          }
-			          else
-			          {
-			          	
-			          	graph_data = output.dataval.gdata;
-			          	graph_style = output.dataval.gstyle;
-			           cy = window.cy = cytoscape({
-					    container: document.getElementById('cy'),
+				$.post("query_graph.php",{gname:name}, 
+					function(result){
+				      	var output = jQuery.parseJSON( result );
+				       	if(output.stat == 0 )
+				        {
+				          	alert(result);
+				            $(location).attr('href',"../login.html");
+				        }
+				        else
+				        {
+				          	
+				        	graph_data = output.dataval.gdata;
+				        	graph_style = output.dataval.gstyle;
+				        	cy = window.cy = cytoscape({
+								container: document.getElementById('cy'),
 
-						ready: function(){
+							ready: function(){
 								user_login();
+							},
 
-						},
+							style: graph_style,
 
-						style: graph_style,
-
-						elements: graph_data,
+							elements: graph_data,
 					});
 
-					cy.cxtmenu({
-						commands: [
-							{
-								content: '<span class="fa fa-flash fa-2x"></span>',
-								select: function(){
-									console.log( this.id() );
-								}
-							},
-
-							{
-								content: '<span class="fa fa-star fa-2x"></span>',
-								select: function(){
-									console.log( this.data('name') );
-									//cy.remove(this);
-									
-								}
-							},
-
-							{
-								content: 'Modify',
-								select: function(){
-									var pos = this.position();
-									//$( "#dialog-confirm" ).show();
-									mod_node = this;
-									mod_node_id = this.id();
-									add_data_to_form(this);
-									dialog.dialog( "open" );
-
-								}
-							},
-							{
-								content: 'Text',
-								select: function(){
-									console.log( this.position() );
-								}
-							}
-						]
-					});
-
-
-
-					cy.cxtmenu2({
-						commands: [
-							{
-								content: '<span class="fa fa-flash fa-2x"></span>',
-								select: function(){
-									console.log( this.id() );
-								}
-							},
-
-							{
-								content: '<span class="fa fa-star fa-2x"></span>',
-								select: function(){
-									console.log( this.data('name') );
-									//cy.remove(this);
-									
-								}
-							},
-
-							{
-								content: 'Modify',
-								select: function(){
-									var pos = this.position();
-									//$( "#dialog-confirm" ).show();
-									mod_node = this;
-									mod_node_id = this.id();
-									add_data_to_form(this);
-									dialog.dialog( "open" );
-
-								}
-							},
-							{
-								content: 'Text',
-								select: function(){
-									console.log( this.position() );
-								}
-							}
-						]
-					});
-
-
-				   }
-			        
-			    });
-
-				
+					set_cxt_menu(cy);
+					   }
+				        
+			    }
+			);
 
 			});
 		</script>
+
+
 
 
 	</head>
 
 	<body>
 		<div id='user_logged'> </div>
-		<div>
-		<button id='save_graph' type="button" class="btn btn-success" onclick="redirect_new_graph()">Import New</button>
+
+		<div class = "navbar-static-top" id='menu_bar'>
+			<button id='save_graph' type="button" class="btn btn-success" onclick="redirect_new_graph()">Import New</button>
+			<form id="add_node_form" action="javascript:add_new_node()" name="add_node_form" style="width:50%">
+		        <div class="form-group">
+		            <label for="node_id1">ID 1</label><input type="text" class="form-control" placeholder="Id 1 ..." id="node_id1" name="node_id1"></br>
+		            <label for="node_key1">Key 1</label><input type="text" class="form-control" placeholder="Key 1 ..." id="node_key1"></br>
+		            <div class="input_fields_wrap" id="add_new_nodes_inputs">
+					    <input type="button" id="add_field_button" name="add_field_button" value="Add More Fields"></br>
+					</div>
+		        </div>
+		         <button type="submit" class="btn btn-default">Submit</button></br> 
+		    </form>
+				<!--<div class="popover-markup"> <a href="#" class="trigger">Popover link</a> 
+				    <div class="head hide">Add Node</div>
+				    <div class="content hide">
+
+				    </div>
+				    <div class="footer hide">test</div>
+				</div>-->
+			<script type="text/javascript">
+				$('.popover-markup>.trigger').popover
+				({
+				    html: true,
+				    title: function () {
+				        return $(this).parent().find('.head').html();
+				    },
+				    content: function () {
+				        return $(this).parent().find('.content').html();
+				    }
+				});
+				//alert('df');
+			</script>
+			<h1>Enjoy Your Graphs!</h1>
 		</div>
+
 		<div id="dialog-form" title="Modify node">
 		<form id ="d_form"></form>
 		</div>
-
-
-		<h1>cytoscape-cxtmenu demo</h1>
 		
 
 		<div id="cy"></div>
