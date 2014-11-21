@@ -72,6 +72,22 @@
 			
 			echo json_encode(array('dataval' => $data, 'stat' => $stat ));
 		}
+		else if( $operation_type == "add_edge" ) 
+		{
+			$edge_sending = $_POST['edge_sending'];
+
+			if ( $collection->insert($edge_sending) )
+			{
+				$data = "Successfully inserted edge in the graph";
+				$stat = 1;
+			}
+			else
+			{
+				$data = "Edge insert in mongo failed";
+				$stat = -1;
+			}
+			echo json_encode(array('dataval' => $data, 'stat' => $stat ));
+		}
 		else if ( $operation_type == "delete_edge" )
 		{
 			$edge_sending = $_POST['edge_sending'];
@@ -83,6 +99,22 @@
 			else
 			{
 				$data = "Node delete edge in mongo failed";
+				$stat = -1;
+			}
+			
+			echo json_encode(array('dataval' => $data, 'stat' => $stat ));
+		}
+		else if ($operation_type == "modify_graph" )
+		{
+			$modify_element = $_POST['modify_element'];
+			if ( $collection->insert($modify_element) )
+			{
+				$data = "Successfully modified element in the graph";
+				$stat = 1;
+			}
+			else
+			{
+				$data = "Modification in mongo failed";
 				$stat = -1;
 			}
 			

@@ -60,8 +60,8 @@ function set_cxt_menu(cy)
 					select: function(){
 						var pos = this.position();
 						//$( "#dialog-confirm" ).show();
-						mod_node = this;
-						mod_node_id = this.id();
+						mod_element = this;
+						mod_element_id = this.id();
 						add_data_to_form(this);
 						dialog.dialog( "open" );
 
@@ -105,8 +105,8 @@ function set_cxt_menu(cy)
 					select: function(){
 						var pos = this.position();
 						//$( "#dialog-confirm" ).show();
-						mod_node = this;
-						mod_node_id = this.id();
+						mod_element = this;
+						mod_element_id = this.id();
 						add_data_to_form(this);
 						dialog.dialog( "open" );
 
@@ -129,25 +129,25 @@ function set_cxt_menu(cy)
 //==================================================================================================================================================================
 //below are the functions used graph_viewOnly.html
 
-var mod_node = {};
-var mod_node_id,cy;
+var mod_element = {};
+var mod_element_id,cy;
 var dialog;
 
 
-function add_data_to_form(node)
+function add_data_to_form(element)
 {
 	var input_fields = "";
-	jQuery.each(node.data(), 
+	jQuery.each(element.data(), 
 							function(i, val)
 							{
-								if(!(i=="id"))
+								if(!(i=="id" || i=="source" || i=="target"))
 								{
 								  input_fields += '<label for="'+i+'">'+ i +'</label>'+
 								  					'<input type="text" name="'+i+'" id="'+i+'" value="'+val+'" class="text ui-widget-content ui-corner-all"/>';
 								}
 								else
 								{
-									input_fields += '<p> Id of the node is ' + val +'. You can\'t modify this(id).</p>';
+									input_fields += '<p> '+i+' of the element is ' + val +'. You can\'t modify this('+i+').</p>';
 								}
 							}
 				);
@@ -161,16 +161,113 @@ function add_data_to_form(node)
 function change_data()
 {
 	var formData = new Object();
-	jQuery.each(mod_node.data(), function(i, val) {
+	jQuery.each(mod_element.data(), function(i, val) {
 		  formData[i] = $('#'+i).val();
 		});
+
+	formData['id'] = mod_element_id;
 	console.info(formData);
 	//var j = cy.$('#'+node_key1);
-	mod_node.data(formData);
+
+	mod_element.data(formData);
 	dialog.dialog( "close" );
+
+
+	var element_sending = new Object();
+
+	element_sending.modify_element_data = formData;
+
+	element_sending.op_type = "modify_element";
+	element_sending.undo = false;
+	element_sending.counter = getNextCounter();
+
+
+	var data_to_be_sent = new Object();
+	data_to_be_sent.modify_element = element_sending;
+	data_to_be_sent.graph = "abcd";
+	data_to_be_sent.operation_type = "modify_graph";
+
+	$.post("app.php",data_to_be_sent,function(result)
+		{
+			var output = jQuery.parseJSON( result );
+			if(output.stat == 0 )
+			{
+				$(location).attr('href',"../login.html");
+			}
+			else
+			{
+				//alert(output.dataval);
+			}
+	       // $("#success_msg").html(output.dataval);
+	    });
+
 }
 
+//===========================================================================================================
+// below are the functions used for dumping changes to graph
 
+function dump_my_changes(cy)
+{
+	var data_to_be_sent = new Object();
+	var my_changes;
+
+	data_to_be_sent.graph = "abcd";
+		$.ajax({
+		  type: 'POST',
+		  url: "modify.php",
+		  data: data_to_be_sent,
+		  success: function(result)
+		  {
+		  		var output = jQuery.parseJSON( result );
+				if(output.stat >= 0 )
+				{	//alert("returned from php "+output.stat);
+					counter = output.stat; //alert('counter set to:  '+counter);
+					//alert(JSON.stringify(output.dataval));
+					my_changes = output.dataval;
+				}
+				else
+				{
+					alert('Something went wrong in getting the counter!');
+				}
+		  },
+		  error: function()
+		  {
+			  // do something if there was an error
+		  },
+		  //dataType: dataType,
+		  async:false
+	});
+
+	jQuery.each(my_changes, function(i,val) 
+	{
+
+		//alert(JSON.stringify(val));
+		if ( val.op_type == "add_node" )
+		{
+			cy.add(val.node_complete);
+		}
+		else if ( val.op_type == "delete_node" )
+		{
+			cy.remove(cy.$('#'+val.node_complete.id));
+		}
+		else if ( val.op_type == "modify_element" )
+		{
+			(cy.$('#'+val.modify_element_data.id)).data(val.modify_element_data);
+		}
+		else if ( val.op_type == "add_edge" )
+		{
+			cy.add(val.edge_complete);
+		}
+		else if ( val.op_type == "delete_edge" )
+		{
+			cy.remove(cy.$('#'+val.edge_complete.id));
+		}
+
+	});
+
+
+
+}
 
 
 //==================================================================================================================================================================
@@ -268,8 +365,8 @@ function add_new_node()
 
 	var node_sending = new Object();
 	node_sending.node_complete = node_complete;
-	node_sending.node_status = "add";
-	node_sending.node_undo = false;
+	node_sending.op_type = "add_node";
+	node_sending.undo = false;
 	node_sending.counter = getNextCounter();
 	//var node_complete_json = JSON.stringify(node_sending);
 	//alert(node_complete_json);
@@ -280,6 +377,7 @@ function add_new_node()
 		data_to_be_sent.node_sending = node_sending;
 		data_to_be_sent.graph = "abcd";
 		data_to_be_sent.operation_type = "add_node";
+		//alert(JSON.stringify(data_to_be_sent));
 
 		$.post("app.php",data_to_be_sent,function(result)
 		{
@@ -319,18 +417,140 @@ function add_new_node()
 	// },
 	// {
 	// 	duration: 10000
-	// });
+	// });	
+}
+
+function add_new_edge() 
+{
+	var edge_id1 = document.getElementById('edge_id1').value;
+	var edge_key1 = document.getElementById('edge_key1').value;
+
+	var edge_source = document.getElementById('edge_id2').value;
+	var edge_source_key = document.getElementById('edge_key2').value;
+
+	var edge_target = document.getElementById('edge_id3').value;
+	var edge_target_key = document.getElementById('edge_key3').value;
+
+	var searchEles = document.getElementById("add_new_edge_inputs").children;
+	var id_array = [];
+	var key_array = [];
+
+	for(var i = 0; i < searchEles.length; i++) 
+	{
+	    if(searchEles[i].tagName == 'INPUT') 
+	    {
+	        if(searchEles[i].id.indexOf('edge_id') == 0) 
+	        {
+	            id_array.push(searchEles[i]);
+	        }
+	        if(searchEles[i].id.indexOf('edge_key') == 0) 
+	        {
+	            key_array.push(searchEles[i]);
+	        }
+	    }
+	}
+
+	var edge_data = {};
+	edge_data[edge_id1] = edge_key1;
+	edge_data[edge_source] = edge_source_key;
+	edge_data[edge_target] = edge_target_key;
+
+	for(var i = 0; i < id_array.length; i++)
+	{
+		edge_data[id_array[i].value] = key_array[i].value;
+	}
+	var edge_data_json = JSON.stringify(edge_data);
+	//alert(edge_data_json);
+
+	// var edge_position = {};
+	// edge_position["x"] = 750;
+	// edge_position["y"] = 220;
+	// var edge_position_json = JSON.stringify(edge_position);
+	//alert(edge_position_json);
+
 
 	
+	var edge_complete = {};
+	edge_complete['group'] = 'edges';
+	edge_complete['data'] = edge_data;
+	//edge_complete['position'] = edge_position;
+	// var edge_complete_json = JSON.stringify(edge_complete);
+	// alert(edge_complete_json);
+
+	var eles =  cy.add(edge_complete
+	//JSON.parse(edge_complete_json)
+	// ,{ group: "edges", data: { id: "e6878", source: "n0", target: "n1" } }
+	);
+
+	//alert(JSON.stringify(eles));
+
+	var edge_sending = new Object();
+	edge_sending.edge_complete = edge_complete;
+	edge_sending.op_type = "add_edge";
+	edge_sending.undo = false;
+	edge_sending.counter = getNextCounter();
+	//var edge_complete_json = JSON.stringify(edge_sending);
+	//alert(edge_complete_json);
+
+	if ( eles != null )
+	{
+		var data_to_be_sent = new Object();
+		data_to_be_sent.edge_sending = edge_sending;
+		data_to_be_sent.graph = "abcd";
+		data_to_be_sent.operation_type = "add_edge";
+
+		//alert(JSON.stringify(data_to_be_sent));
+
+		$.post("app.php",data_to_be_sent,function(result)
+		{
+			var output = jQuery.parseJSON( result );
+			//alert(JSON.stringify(output));
+			if(output.stat == 0 )
+			{
+				$(location).attr('href',"../login.html");
+			}
+			else
+			{
+				//alert('Added to mongo');
+			}
+	       // $("#success_msg").html(output.dataval);
+	    });
+	}
+	else
+	{
+		alert('cyto error');
+	}
+
+
+	var j = cy.$('#'+edge_key1);
+	//alert(j.id);
+	cy.animate({
+	  fit: {
+	    eles: j,
+	     padding: 280
+	  }
+	}, {
+	  duration: 1000
+	});
+
+	// cy.animate(
+	// {
+	// 	pan: { x: 100, y: 120 },
+	// 	zoom: 2
+	// },
+	// {
+	// 	duration: 10000
+	// });	
 }
+
 function delete_node (node) 
 {
 	var node_complete = {};
 	node_complete['id'] = node.data('id');
 	var node_sending = new Object();
 	node_sending.node_complete = node_complete;
-	node_sending.node_status = "delete";
-	node_sending.node_undo = false;
+	node_sending.op_type = "delete_node";
+	node_sending.undo = false;
 	var a = getNextCounter();
 	//alert(a);
 	node_sending.counter = a; 
@@ -372,8 +592,8 @@ function delete_edge (edge)
 	edge_complete['id'] = edge.data('id');
 	var edge_sending = new Object();
 	edge_sending.edge_complete = edge_complete;
-	edge_sending.edge_status = "delete";
-	edge_sending.edge_undo = false;
+	edge_sending.op_type = "delete_edge";
+	edge_sending.undo = false;
 	edge_sending.counter = getNextCounter();
 
 	var edge_complete_json = JSON.stringify(edge_sending);

@@ -50,6 +50,29 @@
 		        e.preventDefault(); $(this).parent('div').remove(); x--;
 		    });
 		});
+
+		$(document).ready(function() {
+		    var max_fields      = 10; //maximum input boxes allowed
+		    var wrapper2         = $(".input_fields_wrap2"); //Fields wrapper
+		    var add_button2      = $("#add_field_button2"); //Add button ID
+		   
+		    var x2 = 3; //initlal text box count
+		    $("#add_field_button2").click(function(e){ //on add input button click
+		    	//alert(x);
+		        e.preventDefault();
+		        if(x2 < max_fields){ //max input box allowed
+		            x2++; //text box increment
+		           // $(wrapper).append('<div><input type="text" name="mytext[]"/><input type="text" name="mytext[]"/><a href="#" class="remove_field">Remove</a></div>'); //add input box
+
+
+		            $(wrapper2).append('<label for="edge_id'+x2+'">ID '+x2+'</label><input type="text" class="form-control" placeholder="Id '+x2+' ..." id="edge_id'+x2+'" name="edge_id'+x2+'"><label for="edge_key'+x2+'">Key '+x2+'</label><input type="text" class="form-control" placeholder="Key '+x2+' ..." id="edge_key'+x2+'"><a href="#" class="remove_field">Remove</a>');
+		        }
+		    });
+		   
+		    $(wrapper2).on("click",".remove_field", function(e){ //user click on remove text
+		        e.preventDefault(); $(this).parent('div').remove(); x2--;
+		    });
+		});
 		</script>
 
 
@@ -135,10 +158,10 @@
 				});
 
 				set_cxt_menu(cy);
+				dump_my_changes(cy);
 
 			});
 		</script>
-
 
 
 
@@ -149,6 +172,11 @@
 
 		<div class = "navbar-static-top" id='menu_bar'>
 			<button id='save_graph' type="button" class="btn btn-success" onclick="redirect_new_graph()">Import New</button>
+
+		<table>
+		<tbody>
+		<tr>
+		<td>
 			<form id="add_node_form" action="javascript:add_new_node()" name="add_node_form" style="width:50%">
 		        <div class="form-group">
 		            <label for="node_id1">ID 1</label><input type="text" class="form-control" placeholder="Id 1 ..." id="node_id1" name="node_id1"></br>
@@ -159,6 +187,28 @@
 		        </div>
 		         <button type="submit" class="btn btn-default">Submit</button></br> 
 		    </form>
+		</td>
+		<td>
+		    <form id="add_edge_form" action="javascript:add_new_edge()" name="add_edge_form" style="width:50%">
+		        <div class="form-group">
+		            <label for="edge_id1">ID 1</label><input type="text" class="form-control" placeholder="Id 1 ..." id="edge_id1" name="edge_id1"></br>
+		            <label for="edge_key1">Key 1</label><input type="text" class="form-control" placeholder="Key 1 ..." id="edge_key1"></br>
+		            <label for="edge_id2">Source</label><input type="text" class="form-control" placeholder="Id 2 ..." id="edge_id2" name="edge_id2" value="source" readonly required></br>
+		            <label for="edge_key2">Key 2</label><input type="text" class="form-control" placeholder="Key 2 ..." id="edge_key2"></br>
+		            <label for="edge_id3">Target</label><input type="text" class="form-control" placeholder="Id 3 ..." id="edge_id3" name="edge_id3" value="target" readonly required></br>
+		            <label for="edge_key3">Key 3</label><input type="text" class="form-control" placeholder="Key 3 ..." id="edge_key3"></br>
+		            <div class="input_fields_wrap2" id="add_new_edge_inputs">
+					    <input type="button" id="add_field_button2" name="add_field_button2" value="Add More Fields"></br>
+					</div>
+		        </div>
+		         <button type="submit" class="btn btn-default">Submit</button></br> 
+		    </form>
+		</td>
+		</tr>
+		</tbody>
+		</table>
+		
+
 				<!--<div class="popover-markup"> <a href="#" class="trigger">Popover link</a> 
 				    <div class="head hide">Add Node</div>
 				    <div class="content hide">
