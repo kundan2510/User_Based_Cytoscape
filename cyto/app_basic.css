@@ -26,6 +26,9 @@ h1 {
 	font-size: 1em;
 }
 
+.add_row{
+	font-size: 25px;
+}
 
 
 label, input { display:block; }

@@ -1,0 +1,271 @@
+<!DOCTYPE>
+
+<html>
+
+	<head>
+		<title>cytoscape-cxtmenu.js demo</title>
+
+		<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1, maximum-scale=1">
+		<meta charset="UTF-8">
+		<link href="font-awesome-4.0.3/css/font-awesome.css" rel="stylesheet" type="text/css" />
+		
+		<script src="http://code.jquery.com/jquery-2.0.3.min.js"></script>
+		<script src="../bootstrap/js/bootstrap.min.js"></script>
+		<script src="http://cytoscape.github.io/cytoscape.js/api/cytoscape.js-latest/cytoscape.min.js"></script>
+		<script src="//code.jquery.com/ui/1.11.2/jquery-ui.js"></script>
+		<link href="../bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+		<!-- for testing with local version of cytoscape.js -->
+		<!--<script src="../cytoscape.js/build/cytoscape.js"></script>-->
+
+		<script src="cytoscape-cxtmenu.js"></script>
+		<script src="cytoscape-cxtmenu2.js"></script>
+		<link rel="stylesheet" href="//code.jquery.com/ui/1.11.2/themes/smoothness/jquery-ui.css">
+
+		<script src="graph_edit.js"></script>
+
+		<link href="app_basic.css" rel="stylesheet" type="text/css" />
+
+
+
+		<script>
+		$(document).ready(function() {
+		    var max_fields      = 10; //maximum input boxes allowed
+		    var wrapper         = $(".input_fields_wrap"); //Fields wrapper
+		    var add_button      = $("#add_field_button"); //Add button ID
+		   
+		    var x = 1; //initlal text box count
+		    $("#add_field_button").click(function(e){ //on add input button click
+		    	//alert(x);
+		        e.preventDefault();
+		        if(x < max_fields){ //max input box allowed
+		            x++; //text box increment
+		           // $(wrapper).append('<div><input type="text" name="mytext[]"/><input type="text" name="mytext[]"/><a href="#" class="remove_field">Remove</a></div>'); //add input box
+
+
+		            $(wrapper).append('<label for="node_id'+x+'">ID '+x+'</label><input class="text ui-widget-content ui-corner-all" type="text" class="form-control" placeholder="Id '+x+' ..." id="node_id'+x+'" name="node_id'+x+'"><label for="node_key'+x+'">Key '+x+'</label><input type="text" class="form-control" placeholder="Key '+x+' ..." id="node_key'+x+'"><a href="#" class="remove_field">Remove</a>');
+		        }
+		    });
+		   
+		    $(wrapper).on("click",".remove_field", function(e){ //user click on remove text
+		        e.preventDefault(); $(this).parent('div').remove(); x--;
+		    });
+		});
+
+		$(document).ready(function() {
+		    var max_fields      = 10; //maximum input boxes allowed
+		    var wrapper2         = $(".input_fields_wrap2"); //Fields wrapper
+		    var add_button2      = $("#add_field_button2"); //Add button ID
+		   
+		    var x2 = 3; //initlal text box count
+		    $("#add_field_button2").click(function(e){ //on add input button click
+		    	//alert(x);
+		        e.preventDefault();
+		        if(x2 < max_fields){ //max input box allowed
+		            x2++; //text box increment
+		           // $(wrapper).append('<div><input type="text" name="mytext[]"/><input type="text" name="mytext[]"/><a href="#" class="remove_field">Remove</a></div>'); //add input box
+
+
+		            $(wrapper2).append('<label for="edge_id'+x2+'">ID '+x2+'</label><input type="text" placeholder="Id '+x2+' ..." id="edge_id'+x2+'" name="edge_id'+x2+'"><label for="edge_key'+x2+'">Key '+x2+'</label><input type="text" class="form-control" placeholder="Key '+x2+' ..." id="edge_key'+x2+'"><a href="#" class="remove_field">Remove</a>');
+		        }
+		    });
+		   
+		    $(wrapper2).on("click",".remove_field", function(e){ //user click on remove text
+		        e.preventDefault(); $(this).parent('div').remove(); x2--;
+		    });
+		});
+		</script>
+
+
+
+
+
+		<script>
+
+			var graph_data = {
+						nodes: [
+							{ data: { id: 'j', name: 'Jerry' } },
+							{ data: { id: 'e', name: 'Elaine' } },
+							{ data: { id: 'k', name: 'Kramer' } },
+							{ data: { id: 'g', name: 'George' } }
+						],
+						edges: [
+							{ data: { source: 'j', target: 'e' } },
+							{ data: { source: 'j', target: 'k' } },
+							{ data: { source: 'j', target: 'g' } },
+							{ data: { source: 'e', target: 'j' } },
+							{ data: { source: 'e', target: 'k' } },
+							{ data: { source: 'k', target: 'j' } },
+							{ data: { source: 'k', target: 'e' } },
+							{ data: { source: 'k', target: 'g' } },
+							{ data: { source: 'g', target: 'j' } }
+						]
+					};
+			var graph_style = [
+						{
+							selector: 'node',
+							css: {
+								'content': 'data(name)'
+							}
+						},
+
+						{
+							selector: 'edge',
+							css: {
+								'target-arrow-shape': 'triangle'
+							}
+						}
+					];
+
+			
+			$(function(){
+
+				var form,form2;		
+				dialog = $( "#dialog-form" ).dialog({
+						autoOpen: false,
+						height: 300,
+						width: 350,
+						modal: true,
+						buttons: {
+							"Update": change_data,
+							Cancel: function() {
+								dialog.dialog( "close" );
+							}
+						},
+						close: function() {
+							form[ 0 ].reset();
+							//allFields.removeClass( "ui-state-error" );
+						}
+					});
+
+					form = dialog.find( "form" ).on( "submit", function( event ) {
+					event.preventDefault();
+					change_data();
+				});
+
+
+				var	dialog2 = $( "#dialog-add-node" ).dialog({
+						autoOpen: true,
+						height: 300,
+						width: 350,
+						modal: true,
+						buttons: {
+							"Update": change_data,
+							Cancel: function() {
+								dialog.dialog( "close" );
+							}
+						},
+						close: function() {
+							form2[ 0 ].reset();
+							//allFields.removeClass( "ui-state-error" );
+						}
+					});
+
+				form2 = dialog.find( "form" ).on( "submit", function( event ) {
+					event.preventDefault();
+					change_data();
+				});
+
+				 //dialog2.open();
+
+
+				var cy = window.cy = cytoscape({
+					container: document.getElementById('cy'),
+
+					ready: function(){
+							user_login();
+					},
+
+					style: graph_style,
+
+					elements: graph_data,
+				});
+
+				set_cxt_menu(cy);
+				dump_my_changes(cy);
+
+			});
+		</script>
+
+
+
+	</head>
+
+	<body>
+		<div id='user_logged'> </div>
+
+		<div class = "navbar-static-top" id='menu_bar'>
+			<button id='save_graph' type="button" class="btn btn-success" onclick="redirect_new_graph()">Import New</button>
+
+		<table>
+		<tbody>
+		<tr>
+		<td>
+			<div id ="dialog-add-node" title="Add Node">
+				<form id="add_node_form" name="add_node_form">
+			        <div class="form-group">
+			            <label for="node_id1">ID 1</label><input type="text" placeholder="Id 1 ..." id="node_id1" name="node_id1" class="text ui-widget-content ui-corner-all"></br>
+			            <label for="node_key1">Key 1</label><input type="text" placeholder="Key 1 ..." id="node_key1" class="text ui-widget-content ui-corner-all"></br>
+			            <div class="input_fields_wrap" id="add_new_nodes_inputs">
+						    
+						</div>
+			        </div>
+			         <button type="submit" class="btn btn-default">Submit</button></br> 
+			    </form>
+		    </div>
+		</td>
+		<td>
+			<div id="dialog-add-edge" title="Add Edge">
+			    <form id="add_edge_form" action="javascript:add_new_edge()" name="add_edge_form" style="width:50%">
+			        <div class="form-group">
+			            <label for="edge_id1">ID 1</label><input type="text" class="form-control" placeholder="Id 1 ..." id="edge_id1" name="edge_id1" class="text ui-widget-content ui-corner-all"></br>
+			            <label for="edge_key1">Key 1</label><input type="text" class="form-control" placeholder="Key 1 ..." id="edge_key1" class="text ui-widget-content ui-corner-all"></br>
+			            <label for="edge_id2">Source</label><input type="text" class="form-control" placeholder="Id 2 ..." id="edge_id2" name="edge_id2" value="source" readonly required></br>
+			            <label for="edge_key2">Key 2</label><input type="text" class="form-control" placeholder="Key 2 ..." id="edge_key2" class="text ui-widget-content ui-corner-all"></br>
+			            <label for="edge_id3">Target</label><input type="text" class="form-control" placeholder="Id 3 ..." id="edge_id3" name="edge_id3" value="target" readonly required class="text ui-widget-content ui-corner-all"></br>
+			            <label for="edge_key3">Key 3</label><input type="text" class="form-control" placeholder="Key 3 ..." id="edge_key3" class="text ui-widget-content ui-corner-all"></br>
+			            <div class="input_fields_wrap2" id="add_new_edge_inputs">
+						    <input type="button" id="add_field_button2" name="add_field_button2" value="Add More Fields"></br>
+						</div>
+			        </div>
+			         <button type="submit" class="btn btn-default">Submit</button></br> 
+			    </form>
+			</div>
+		</td>
+		</tr>
+		</tbody>
+		</table>
+		
+
+				<!--<div class="popover-markup"> <a href="#" class="trigger">Popover link</a> 
+				    <div class="head hide">Add Node</div>
+				    <div class="content hide">
+
+				    </div>
+				    <div class="footer hide">test</div>
+				</div>-->
+			<script type="text/javascript">
+				$('.popover-markup>.trigger').popover
+				({
+				    html: true,
+				    title: function () {
+				        return $(this).parent().find('.head').html();
+				    },
+				    content: function () {
+				        return $(this).parent().find('.content').html();
+				    }
+				});
+				//alert('df');
+			</script>
+			<h1>Enjoy Your Graphs!</h1>
+		</div>
+
+		<div id="dialog-form" title="Modify node">
+		<form id ="d_form"></form>
+		</div>
+		
+
+		<div id="cy"></div>
+
+	</body>
+
+</html>
