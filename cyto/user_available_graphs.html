@@ -1,0 +1,98 @@
+<!DOCTYPE>
+
+<html>
+
+
+<head>
+	<script src="http://code.jquery.com/jquery-2.0.3.min.js"> </script>
+	<script src="../bootstrap/js/bootstrap.min.js"> </script>
+
+	<link href="../bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+
+	<script>
+	function get_graph_list()
+	  {
+	    $.post("user_available_graphs.php",function(result){
+	      var output = jQuery.parseJSON( result );
+	      if(output.stat == 1 )
+	      {
+	        $('#available_graphs').html(output.dataval);
+	      }
+	      else
+	      {
+	      	alert("something went wrong! :(");
+	      	$(location).attr('href',"../login.html");
+	      }
+	    });
+	  }
+
+	  $(document).ready(get_graph_list());
+
+	</script>
+
+
+
+</head>
+
+<body>
+<div class='container'>
+<div id="available_graphs"></div>
+</div>
+
+<script>
+function save_graph_name(form)
+{
+	var base_graph_id = document.getElementById("base_graph_id").value;
+	var version_graph_id = document.getElementById("version_graph_id").value;
+	
+	var edit_graph_id = document.getElementById("edit_graph_id").value;
+
+	if ( edit_graph_id )
+	{
+		if ( version_graph_id && base_graph_id )
+		{
+			alert("ERROR Both Selected: Select exactly 1 of the drop  downs");
+			return false;
+		}
+		else if ( version_graph_id )
+		{
+			document.getElementById("parent_graph_id").value = version_graph_id;
+			document.getElementById("graph_inheritance_type").value = "version";
+			form.submit();
+		}
+		else if ( base_graph_id )
+		{
+			document.getElementById("parent_graph_id").value = base_graph_id;
+			document.getElementById("graph_inheritance_type").value = "base";
+			form.submit();
+		}
+		else
+		{
+			alert("ERROR None Selected: Select exactly 1 of the drop downs");
+			return false;
+		}
+		
+	}
+
+}
+</script>
+
+
+<div>
+	<p>Enter the new graph name. If you enter an existing graph name which was a version of a standard base graph, it would be over written. If you write a new name, it would inherit the propertie of the graph selected from either of the above 2 drop downs. </p>
+	<form id="edit_graph_form" name="edit_graph_form" action="user_save_graph.php" method="post">
+		<label for="edit_graph_name">Graph Name</label>
+		<input type="text" name="edit_graph_name" id="edit_graph_id">
+		<input type="hidden" name="parent_graph_name" id="parent_graph_id">
+		<input type="hidden" name="graph_inheritance_type" id="graph_inheritance_type">
+		<button type="submit" onclick="return save_graph_name(this.form);">Save</button>
+	</form>
+
+	<!-- <form action="user_save_graph.php" method="post">
+	Name: <input type="text" name="edit_graph_name"><br>
+	E-mail: <input type="text" name="email"><br>
+	<input type="submit">
+	</form> -->
+
+</body>
+</html>

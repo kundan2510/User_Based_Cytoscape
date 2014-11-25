@@ -7,7 +7,10 @@
 		$graph = $_POST['graph'];
 		$operation_type = $_POST['operation_type'];
 		$db = $m->cs252;
-		$table = $user."_".$graph;
+		$table = $graph;
+
+		//$table = $user."_".$graph;
+		
 		$collection = $db->$table;
 		
 

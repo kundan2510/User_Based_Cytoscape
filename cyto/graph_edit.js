@@ -7,7 +7,11 @@ function user_login()
       //alert(result);
       if(output.stat == 1 )
       {
-        $('#user_logged').html("<h3>Welcome "+output.user+"</h3>");
+	        $('#user_logged').html("<h3>Welcome "+output.user+"</h3>");
+	        var url = $(location).attr('href');
+			var name = url.split("?")[2].split("=")[1];
+			$('#graph_name_displayer').html(name);
+
       }
       else if(output.stat == 0)
       {
@@ -184,7 +188,7 @@ function change_data()
 
 	var data_to_be_sent = new Object();
 	data_to_be_sent.modify_element = element_sending;
-	data_to_be_sent.graph = "abcd";
+	data_to_be_sent.graph = document.getElementById('graph_name_displayer').innerHTML; //"abcd";
 	data_to_be_sent.operation_type = "modify_graph";
 
 	$.post("app.php",data_to_be_sent,function(result)
@@ -211,7 +215,8 @@ function dump_my_changes(cy)
 	var data_to_be_sent = new Object();
 	var my_changes;
 
-	data_to_be_sent.graph = "abcd";
+	data_to_be_sent.graph = document.getElementById('graph_name_displayer').innerHTML; //"abcd";
+
 		$.ajax({
 		  type: 'POST',
 		  url: "modify.php",
@@ -264,11 +269,56 @@ function dump_my_changes(cy)
 		}
 
 	});
-
-
-
 }
 
+
+function versioned_dump_my_changes(cy,my_changes)
+{
+
+	jQuery.each(my_changes, function(i,tal) 
+	{
+
+		if( i == "gdata" )
+		{
+			return;
+		}
+		if ( i == "gstyle" )
+		{
+			return;
+		}
+
+
+		jQuery.each(tal, function(j,val) 
+		{
+
+			if ( val.op_type == "add_node" )
+			{
+				cy.add(val.node_complete);
+			}
+			else if ( val.op_type == "delete_node" )
+			{
+				cy.remove(cy.$('#'+val.node_complete.id));
+			}
+			else if ( val.op_type == "modify_element" )
+			{
+				(cy.$('#'+val.modify_element_data.id)).data(val.modify_element_data);
+			}
+			else if ( val.op_type == "add_edge" )
+			{
+				cy.add(val.edge_complete);
+			}
+			else if ( val.op_type == "delete_edge" )
+			{
+				cy.remove(cy.$('#'+val.edge_complete.id));
+			}
+			else
+			{
+				alert("bla");
+			}
+		});
+
+	});
+}
 
 //==================================================================================================================================================================
 // below are the functions used by app.html 
@@ -276,7 +326,7 @@ function dump_my_changes(cy)
 function getNextCounter() 
 {
 	var data_to_be_sent = new Object();
-	data_to_be_sent.graph = "abcd";
+	data_to_be_sent.graph = document.getElementById('graph_name_displayer').innerHTML; //"abcd";
 	data_to_be_sent.operation_type = "counter_query";
 	var counter = 42;
 	$.ajax({
@@ -375,7 +425,8 @@ function add_new_node()
 	{
 		var data_to_be_sent = new Object();
 		data_to_be_sent.node_sending = node_sending;
-		data_to_be_sent.graph = "abcd";
+		data_to_be_sent.graph = document.getElementById('graph_name_displayer').innerHTML; //"abcd";
+		
 		data_to_be_sent.operation_type = "add_node";
 		//alert(JSON.stringify(data_to_be_sent));
 
@@ -496,7 +547,8 @@ function add_new_edge()
 	{
 		var data_to_be_sent = new Object();
 		data_to_be_sent.edge_sending = edge_sending;
-		data_to_be_sent.graph = "abcd";
+		data_to_be_sent.graph = document.getElementById('graph_name_displayer').innerHTML; //"abcd";
+		
 		data_to_be_sent.operation_type = "add_edge";
 
 		//alert(JSON.stringify(data_to_be_sent));
@@ -564,7 +616,10 @@ function delete_node (node)
 	{
 		var data_to_be_sent = new Object();
 		data_to_be_sent.node_sending = node_sending;
-		data_to_be_sent.graph = "abcd";
+	// 	alert('hello delete');
+	// alert(document.getElementById('graph_name_displayer').innerHTML);
+		data_to_be_sent.graph = document.getElementById('graph_name_displayer').innerHTML; //"abcd";
+
 		data_to_be_sent.operation_type = "delete_node";
 		$.post("app.php",data_to_be_sent,function(result)
 		{
@@ -604,7 +659,8 @@ function delete_edge (edge)
 	{
 		var data_to_be_sent = new Object();
 		data_to_be_sent.edge_sending = edge_sending;
-		data_to_be_sent.graph = "abcd";
+		data_to_be_sent.graph = document.getElementById('graph_name_displayer').innerHTML; //"abcd";
+
 		data_to_be_sent.operation_type = "delete_edge";
 		$.post("app.php",data_to_be_sent,function(result)
 		{

@@ -11,7 +11,7 @@
 		$graph_style = $_POST['g_style'];
 		$graph_name = $_POST['g_name'];
 		$document = array( 
-			 "gname" => $graph_name['name'],
+			 "gname" => $_SESSION['user']."_".$graph_name['name'],
 	         "gdata" => $graph_data, 
 	         "gstyle" => $graph_style,
 	         "submitted_by" => $user
@@ -21,7 +21,9 @@
 		$collection = $db->user_graphs;
 		$document = array( 
 			 "user" => $user,
-	         "gname" => $graph_name['name']
+	         "gname" => $_SESSION['user']."_".$graph_name['name'],
+	         "type" => "base",
+	         "parent" => $_SESSION['user']."_".$graph_name['name']
 	         );
 		$collection->insert($document);
 
@@ -32,7 +34,7 @@
 	         );
 		$collection->insert($document);*/
 
-		$data = "Successfully inserted the graph ".$graph_name['name'];
+		$data = "Successfully inserted the graph ".$_SESSION['user']."_".$graph_name['name'];
 		$stat = 1;
 		echo json_encode(array("dataval" => $data, "stat" => $stat ));
 		//echo json_encode($_POST);

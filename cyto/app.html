@@ -81,7 +81,46 @@
 
 		<script>
 
-			var graph_data = {
+			var graph_data;
+		    var graph_style;
+			var url = $(location).attr('href');
+			var name = url.split("?")[2].split("=")[1];
+			var type = url.split("?")[3].split("=")[1];
+			//alert('graph name followed by type '+name+' '+type);
+
+			$.post("get_graph.php",{gname:name,gtype:type}, 
+				function(result){
+			      	var output = jQuery.parseJSON( result );
+			       	if(output.stat == 0 )
+			        {
+			          	alert(result);
+			            $(location).attr('href',"../login.html");
+			        }
+			        else
+			        {
+			          	alert(JSON.stringify(output.dataval));
+			        	graph_data = output.dataval.gdata;
+			        	graph_style = output.dataval.gstyle;
+
+			        	var cy = window.cy = cytoscape({
+							container: document.getElementById('cy'),
+
+							ready: function(){
+									user_login();
+							},
+
+							style: graph_style,
+
+							elements: graph_data,
+						});
+
+						set_cxt_menu(cy);
+
+						versioned_dump_my_changes(cy,output.dataval);
+			       	}
+
+			    });
+			/*var graph_data = {
 						nodes: [
 							{ data: { id: 'j', name: 'Jerry' } },
 							{ data: { id: 'e', name: 'Elaine' } },
@@ -114,7 +153,7 @@
 								'target-arrow-shape': 'triangle'
 							}
 						}
-					];
+					];*/
 
 			
 			$(function(){
@@ -145,7 +184,7 @@
 				 
 
 
-				var cy = window.cy = cytoscape({
+				/*var cy = window.cy = cytoscape({
 					container: document.getElementById('cy'),
 
 					ready: function(){
@@ -158,7 +197,7 @@
 				});
 
 				set_cxt_menu(cy);
-				dump_my_changes(cy);
+				dump_my_changes(cy);*/
 
 			});
 		</script>
@@ -169,6 +208,8 @@
 
 	<body>
 		<div id='user_logged'> </div>
+
+		You are editing graph: <div id="graph_name_displayer" name="graph_name_displayer"></div>
 
 		<div class = "navbar-static-top" id='menu_bar'>
 			<button id='save_graph' type="button" class="btn btn-success" onclick="redirect_new_graph()">Import New</button>
