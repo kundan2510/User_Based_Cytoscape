@@ -5,7 +5,7 @@
 
   <meta charset="UTF-8">
 
-  <title>Log-in - CodePen</title>
+  <title>Log-in</title>
 
   <link rel='stylesheet' href='http://codepen.io/assets/libs/fullpage/jquery-ui.css'>
 
@@ -19,7 +19,7 @@
       var output = jQuery.parseJSON( result );
       if(output.stat == 1 )
       {
-        $(location).attr('href',"cyto/app.html");
+        $(location).attr('href',"cyto/user_available_graphs.html");
       }
     $("#error_msg").html(output.dataval);
     });

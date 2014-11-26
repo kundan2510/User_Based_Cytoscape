@@ -23,7 +23,35 @@ function user_login()
       }
     });
 }
+var dialog4, form4;
+$(function(){
+			
+		dialog4 = $( "#dialog-details" ).dialog({
+						autoOpen: false,
+						minHeight:"auto",
+						width: "auto",
+						minWidth:300,
+						modal: true,
+						close: function() {
+							//allFields.removeClass( "ui-state-error" );
+						}
+					});
 
+		});
+//===============================================================================================
+function show_details(obj)
+{
+	var output = "<table class='table table-striped'>";
+	jQuery.each(obj, 
+							function(i, val)
+							{
+								output += "<tr><td>"+i+"</td><td>:</td><td>"+val+"</td></tr>"
+							}
+				);
+	output += "</table>";
+	$("#det").html(output);
+	dialog4.dialog("open");
+}
 
 function redirect_new_graph()
 {
@@ -74,8 +102,9 @@ function set_cxt_menu(cy)
 			{
 				content: 'All Data',
 				select: function(){
-					alert(JSON.stringify(this.data() ));
+					//alert(JSON.stringify(this.data() ));
 					//console.log( this.data() );
+					show_details(this.data());
 				}
 			}
 		]
@@ -119,8 +148,9 @@ function set_cxt_menu(cy)
 			{
 				content: 'All Data',
 				select: function(){
-					alert(JSON.stringify( this.data() ));
+					//alert(JSON.stringify( this.data() ));
 					//console.log( this.data() );
+					show_details(this.data());
 				}
 			}
 		]
@@ -360,33 +390,34 @@ function getNextCounter()
 
 function add_new_node() 
 {
-	var node_id1 = document.getElementById('node_id1').value;
-	var node_key1 = document.getElementById('node_key1').value;
 
-	var searchEles = document.getElementById("add_new_nodes_inputs").children;
+	var searchEles =$("#add_node_form input"); 
 	var id_array = [];
 	var key_array = [];
 
-	for(var i = 0; i < searchEles.length; i++) 
-	{
-	    if(searchEles[i].tagName == 'INPUT') 
-	    {
-	        if(searchEles[i].id.indexOf('node_id') == 0) 
-	        {
-	            id_array.push(searchEles[i]);
-	        }
-	        if(searchEles[i].id.indexOf('node_key') == 0) 
-	        {
-	            key_array.push(searchEles[i]);
-	        }
-	    }
-	}
+	//alert(searchEles.length);
+	searchEles.each(function(index) {
 
-	var node_data = {};
-	node_data[node_id1] = node_key1;
+         //alert(index + ': ' + $(this).attr("id") + "=" + $(this).val());
+        if($(this).attr("id").indexOf('node_id') == 0) 
+        {
+        	//alert("hi there");
+            id_array.push($(this).val());
+        }
+        if($(this).attr("id").indexOf('node_key') == 0) 
+        {
+        	//alert("hi friend");
+            key_array.push($(this).val());
+        }
+
+    });
+
+	var node_data = new Object();
+	//alert(id_array.length);
 	for(var i = 0; i < id_array.length; i++)
 	{
-		node_data[id_array[i].value] = key_array[i].value;
+		node_data[id_array[i]] = key_array[i];
+		//alert(id_array[i] + ": " + node_data[id_array[i]]);
 	}
 	var node_data_json = JSON.stringify(node_data);
 	//alert(node_data_json);
@@ -450,11 +481,11 @@ function add_new_node()
 	}
 
 
-	var j = cy.$('#'+node_key1);
+	//var j = eles;//cy.$('#'+node_key1);
 	//alert(j.id);
 	cy.animate({
 	  fit: {
-	    eles: j,
+	    eles: eles,
 	     padding: 280
 	  }
 	}, {
@@ -473,42 +504,50 @@ function add_new_node()
 
 function add_new_edge() 
 {
-	var edge_id1 = document.getElementById('edge_id1').value;
-	var edge_key1 = document.getElementById('edge_key1').value;
-
-	var edge_source = document.getElementById('edge_id2').value;
-	var edge_source_key = document.getElementById('edge_key2').value;
-
-	var edge_target = document.getElementById('edge_id3').value;
-	var edge_target_key = document.getElementById('edge_key3').value;
-
-	var searchEles = document.getElementById("add_new_edge_inputs").children;
+	
+	var searchEles =$("#add_edge_form input"); 
 	var id_array = [];
 	var key_array = [];
 
-	for(var i = 0; i < searchEles.length; i++) 
-	{
-	    if(searchEles[i].tagName == 'INPUT') 
-	    {
-	        if(searchEles[i].id.indexOf('edge_id') == 0) 
-	        {
-	            id_array.push(searchEles[i]);
-	        }
-	        if(searchEles[i].id.indexOf('edge_key') == 0) 
-	        {
-	            key_array.push(searchEles[i]);
-	        }
-	    }
-	}
+	//alert(searchEles.length);
+	searchEles.each(function(index) {
 
-	var edge_data = {};
-	edge_data[edge_id1] = edge_key1;
-	edge_data[edge_source] = edge_source_key;
-	edge_data[edge_target] = edge_target_key;
+         //alert(index + ': ' + $(this).attr("id") + "=" + $(this).val());
+        if($(this).attr("id").indexOf('edge_id') == 0) 
+        {
+        	//alert("hi there");
+            id_array.push($(this).val());
+        }
+        if($(this).attr("id").indexOf('edge_key') == 0) 
+        {
+        	//alert("hi friend");
+            key_array.push($(this).val());
+        }
+        if($(this).attr("id").indexOf('source') == 0) 
+        {
+        	//alert("hi friend");
+            id_array.push("source");
+            key_array.push($(this).val());
+
+        }
+        if($(this).attr("id").indexOf('target') == 0) 
+        {
+        	//alert("hi friend");
+            id_array.push("target");
+            key_array.push($(this).val());
+        }
+
+    });
+
+
+
+
+
+	var edge_data = new Object();
 
 	for(var i = 0; i < id_array.length; i++)
 	{
-		edge_data[id_array[i].value] = key_array[i].value;
+		edge_data[id_array[i]] = key_array[i];
 	}
 	var edge_data_json = JSON.stringify(edge_data);
 	//alert(edge_data_json);
@@ -574,12 +613,12 @@ function add_new_edge()
 	}
 
 
-	var j = cy.$('#'+edge_key1);
+	//var j = eles;
 	//alert(j.id);
 	cy.animate({
 	  fit: {
-	    eles: j,
-	     padding: 280
+	    eles: eles,
+	     //padding: 280
 	  }
 	}, {
 	  duration: 1000
@@ -683,4 +722,146 @@ function delete_edge (edge)
 }
 
 //==================================================================================================================================================================
-//
+//last day modifications
+var x = 2;
+var x2 = 2; //initlal text box count
+var form2,form3;
+var	dialog2, dialog3;
+
+		function test()
+		{
+			alert("hello");
+		}
+		function add_dialog_open()
+		{
+			dialog2.dialog( "open" );
+		}
+		function add_e_dialog_open()
+		{
+			dialog3.dialog("open");
+		}
+		function add_node()
+		{
+			add_new_node();
+			dialog2.dialog( "close" );
+		}
+		function add_edge()
+		{
+			add_new_edge();
+			dialog3.dialog( "close" );
+		}
+		function add_remove()
+		{
+			//alert(this.id);
+			
+		            
+		        
+		        if($(this).hasClass('btn-success'))
+		        {
+		        	var wrapper         = $(".input_fields_wrap"); //Fields wrapper
+				           // $(wrapper).append('<div><input type="text" name="mytext[]"/><input type="text" name="mytext[]"/><a href="#" class="remove_field">Remove</a></div>'); //add input box
+
+
+		            $(wrapper).append('<div><label for="Field '+x+'">Field '+x+'</label>		            <div class="row">	<div class="col-md-5">			           <input type="text" placeholder="Key '+x+' ..." id="node_id'+x+'" name="node_id'+x+'" class="text ui-widget-content ui-corner-all">			            </div>			            <div class="col-md-5">		            <input type="text" placeholder="Value '+x+' ..." id="node_key'+x+'" class="text ui-widget-content ui-corner-all">			            </div>			            <div class="col-md-2">			           <button id= "add_field_button"'+x+' class="btn btn-success btn-add" type="button" onclick="add_remove.call(this)" ><span class="glyphicon glyphicon-plus-sign"></span></button>			            </div>			            </div></div>');
+
+		        	$(this).removeClass('btn-success');
+		        	$(this).addClass('btn-danger');
+			            
+			        $(this).html('<span class="glyphicon glyphicon-minus"></span>');
+
+			       x++;
+		        }
+		        else
+		        {
+		        	$(this).parent('div').parent('div').parent('div').remove();
+		        }
+		        
+		}
+
+
+		function add_e_remove()
+		{
+			//alert(this.id);
+			
+		            
+		        
+		        if($(this).hasClass('btn-success'))
+		        {
+		        	var wrapper         = $(".input_fields_wrap2"); //Fields wrapper
+				           // $(wrapper).append('<div><input type="text" name="mytext[]"/><input type="text" name="mytext[]"/><a href="#" class="remove_field">Remove</a></div>'); //add input box
+
+
+		            $(wrapper).append('<div><label for="Field '+x2+'">Field '+x2+'</label>		            <div class="row">	<div class="col-md-5">			           <input type="text" placeholder="Key '+x2+' ..." id="edge_id'+x2+'" name="edge_id'+x2+'" class="text ui-widget-content ui-corner-all">			            </div>			            <div class="col-md-5">		            <input type="text" placeholder="Value '+x2+' ..." id="edge_key'+x2+'" class="text ui-widget-content ui-corner-all">			            </div>			            <div class="col-md-2">			           <button id= "add_field_button"'+x2+' class="btn btn-success btn-add" type="button" onclick="add_e_remove.call(this)" ><span class="glyphicon glyphicon-plus-sign"></span></button>			            </div>			            </div></div>');
+
+		        	$(this).removeClass('btn-success');
+		        	$(this).addClass('btn-danger');
+			            
+			        $(this).html('<span class="glyphicon glyphicon-minus"></span>');
+
+			       x2++;
+		        }
+		        else
+		        {
+		        	$(this).parent('div').parent('div').parent('div').remove();
+		        }
+		        
+		}
+
+
+		$(function(){
+			
+		dialog2 = $( "#dialog-add-node" ).dialog({
+						autoOpen: false,
+						minHeight:"auto",
+						width: "auto",
+						modal: true,
+						buttons: {
+							"Update": add_node,
+							Cancel: function() {
+								dialog.dialog( "close" );
+							}
+						},
+						close: function() {
+							form2[ 0 ].reset();
+							//allFields.removeClass( "ui-state-error" );
+						}
+					});
+
+				form2 = dialog2.find( "form" ).on( "submit", function( event ) {
+					event.preventDefault();
+					add_node();
+				});
+
+		dialog3 = $( "#dialog-add-edge" ).dialog({
+						autoOpen: false,
+						minHeight:"auto",
+						width: "auto",
+						modal: true,
+						buttons: {
+							"Update": add_edge,
+							Cancel: function() {
+								dialog.dialog( "close" );
+							}
+						},
+						close: function() {
+							form3[ 0 ].reset();
+							//allFields.removeClass( "ui-state-error" );
+						}
+					});
+
+				form3 = dialog3.find( "form" ).on( "submit", function( event ) {
+					event.preventDefault();
+					add_edge();
+				});
+
+
+		});
+
+
+function logout()
+{
+	$.post("logout.php",function(result){
+		$(location).attr('href',"../login.html");
+	});
+}
+//===============================================================================================

@@ -25,7 +25,7 @@
 
 		<link href="app_basic.css" rel="stylesheet" type="text/css" />
 		<script type="text/javascript">
-		var x = 1; //initlal text box count
+		var x = 2; //initlal text box count
 		var max_fields      = 10; //maximum input boxes allowed
 
 		function test()
@@ -35,31 +35,30 @@
 		function add_remove()
 		{
 			//alert(this.id);
-			var wrapper         = $(".input_fields_wrap"); //Fields wrapper
-			if(x < max_fields){ //max input box allowed
-		            x++; //text box increment
-		           // $(wrapper).append('<div><input type="text" name="mytext[]"/><input type="text" name="mytext[]"/><a href="#" class="remove_field">Remove</a></div>'); //add input box
-
-
-		            $(wrapper).append('<label for="Field '+x+'">Field '+x+'</label>		            <div class="row">	<div class="col-md-5">			           <input type="text" placeholder="Id '+x+' ..." id="node_id'+x+'" name="node_id'+x+'" class="text ui-widget-content ui-corner-all">			            </div>			            <div class="col-md-5">		            <input type="text" placeholder="Key '+x+' ..." id="node_key'+x+'" class="text ui-widget-content ui-corner-all">			            </div>			            <div class="col-md-2">			           <button id= "add_field_button"class="btn btn-success btn-add" type="button" ><span class="glyphicon glyphicon-plus-sign"></span></button>			            </div>			            </div>');
+			
 		            
-		        }
-		}
-		$(document).ready(function() {
-		    var wrapper         = $(".input_fields_wrap"); //Fields wrapper
-		    var add_button      = $("#add_field_button"); //Add button ID
-		   
-		    
-		    $("#add_field_button").click(function(e){ //on add input button click
-		    	alert("sdfghjkl");
-		        e.preventDefault();
 		        
-		    });
-		   
-		    $(wrapper).on("click",".remove_field", function(e){ //user click on remove text
-		        e.preventDefault(); $(this).parent('div').remove(); x--;
-		    });
-		});
+		        if($(this).hasClass('btn-success'))
+		        {
+		        	var wrapper         = $(".input_fields_wrap"); //Fields wrapper
+				           // $(wrapper).append('<div><input type="text" name="mytext[]"/><input type="text" name="mytext[]"/><a href="#" class="remove_field">Remove</a></div>'); //add input box
+
+
+		            $(wrapper).append('<div><label for="Field '+x+'">Field '+x+'</label>		            <div class="row">	<div class="col-md-5">			           <input type="text" placeholder="Id '+x+' ..." id="node_id'+x+'" name="node_id'+x+'" class="text ui-widget-content ui-corner-all">			            </div>			            <div class="col-md-5">		            <input type="text" placeholder="Key '+x+' ..." id="node_key'+x+'" class="text ui-widget-content ui-corner-all">			            </div>			            <div class="col-md-2">			           <button id= "add_field_button"class="btn btn-success btn-add" type="button" onclick="add_remove.call(this)" ><span class="glyphicon glyphicon-plus-sign"></span></button>			            </div>			            </div></div>');
+
+		        	$(this).removeClass('btn-success');
+		        	$(this).addClass('btn-danger');
+			            
+			        $(this).html('<span class="glyphicon glyphicon-minus"></span>');
+
+			       x++;
+		        }
+		        else
+		        {
+		        	$(this).parent('div').parent('div').parent('div').remove();
+		        }
+		        
+		}
 		$(function(){
 			var form2;
 		var	dialog2 = $( "#dialog-add-node" ).dialog({
@@ -90,6 +89,7 @@
 		<div id ="dialog-add-node" title="Add Node">
 				<form id="add_node_form" name="add_node_form">
 			        <div class="form-group input_fields_wrap">
+			            <div>
 			            <label for="Field 1">Field 1</label>
 			            <div class="row">
 			            <div class="col-md-5">
@@ -99,9 +99,10 @@
 			            <input type="text" placeholder="Key 1 ..." id="node_key1" class="text ui-widget-content ui-corner-all">
 			            </div>
 			            <div class="col-md-2">
-			            <button id= "add_field_button1"class="add_row btn btn-success btn-add" type="button"  onclick="add_remove()"><span class="glyphicon glyphicon-plus-sign"></span></button>
+			            <button id= "add_field_button1" class="btn btn-success" type="button"  onclick="add_remove.call(this)"><span class="glyphicon glyphicon-plus-sign"></span></button>
 			            </div>
-			            </div>	    
+			            </div>
+			            </div>	
 					</div>
 					</form>
 		</div>
