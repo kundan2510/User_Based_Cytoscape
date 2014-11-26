@@ -1,0 +1,22 @@
+[
+	{
+		"selector": "node",
+		"css": {
+			"content": "data(name)",
+			"font-family": "helvetica",
+			"font-size": 11,
+			"text-valign": "center",
+			"color": "#000",
+			"width": 60,
+			"height": 60,
+			"background-opacity": 0.5
+		}
+	},
+
+	{
+		"selector": "edge",
+		"css": {
+			"target-arrow-shape": "triangle"
+		}
+	}
+]

@@ -4,6 +4,9 @@ body {
 	font-size: 14px;
 }
 
+.container{
+	padding: 0.5em;
+}
 #menu_bar {
 	padding: 0.5em;
 	border-bottom: 1px solid #2FBA5B;

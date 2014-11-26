@@ -58,7 +58,10 @@ function redirect_new_graph()
 	$(location).attr('href',"save_graph.html");
 }
 
-
+function redirect_user_available_graphs()
+{
+	$(location).attr('href',"user_available_graphs.html");
+}
 
 
 function set_cxt_menu(cy)
@@ -856,6 +859,72 @@ var	dialog2, dialog3;
 
 
 		});
+function set_layout(layout_name)
+{
+	//alert(layout_name);
+
+	var layout_option ={
+		name: layout_name,
+		fit: true,
+		avoidOverlap: true,
+		animate :true,
+		maxSimulationTime : 4000
+	};
+	if(layout_name.indexOf("breadthfirst") == 0)
+	{
+		//alert("heheh");
+		
+	}
+	cy.layout(layout_option);
+}
+var j,old_color;
+function change_color_old()
+{
+					j.css("background-color",old_color);
+}
+function change_color_green()
+{
+					j.css("background-color","green");
+}
+function change_color_blue()
+{
+					j.css("background-color","blue");
+}
+function query_node()
+{
+	//var j = eles;//cy.$('#'+node_key1);
+	//alert(j.id);
+	j = cy.$('#'+$("#node_q").val());
+	cy.center(j);
+	old_color = j.css("background-color");
+	j.css("background-color","red");
+
+	if(j != null)
+	{
+		cy
+			.animate(
+				{	
+				  fit: {
+				    eles: j,
+				    padding: 280
+				  }
+				}, 
+				{
+				  duration: 600
+				}
+				// {
+				// 	complete: change_color
+				// }
+			)
+
+			.delay(0, change_color_blue)
+
+			.delay(500,change_color_green)
+
+			.delay(500, change_color_old);
+	}
+
+}
 
 
 function logout()

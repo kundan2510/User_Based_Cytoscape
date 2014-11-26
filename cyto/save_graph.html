@@ -10,6 +10,19 @@
 	<link href="../bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
 
 	<script type="text/javascript">
+	function logout()
+	{
+		$.post("logout.php",function(result){
+			$(location).attr('href',"../login.html");
+		});
+	}
+
+
+	function redirect_user_available_graphs()
+	{
+			$(location).attr('href',"user_available_graphs.html");
+	}
+
 	function save_graph_db()
 	{
 		//$('#g_name').html();
@@ -100,6 +113,10 @@
 
 <body>
 		<div id='user_logged'> </div>
+		<div>
+			<button class="btn btn-success"onclick="redirect_user_available_graphs()">Check Available Graphs</button>
+			<button class="btn btn-danger"onclick="logout()">Log Out</button>
+		</div>
 		<div class="container">
 		<form action="javascript:save_graph_db()" role="form" class="form-inline">
 			<div class="form-group">

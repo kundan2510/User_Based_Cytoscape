@@ -10,6 +10,18 @@
 	<link href="../bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
 
 	<script>
+	function logout()
+	{
+		$.post("logout.php",function(result){
+			$(location).attr('href',"../login.html");
+		});
+	}
+
+	function redirect_save_graph()
+	{
+			$(location).attr('href',"save_graph.html");
+	}
+
 	function get_graph_list()
 	  {
 	    $.post("user_available_graphs.php",function(result){
@@ -20,7 +32,7 @@
 	      }
 	      else
 	      {
-	      	alert("something went wrong! :(");
+	      	//alert("something went wrong! :(");
 	      	$(location).attr('href',"../login.html");
 	      }
 	    });
@@ -30,16 +42,7 @@
 
 	</script>
 
-
-
-</head>
-
-<body>
-<div class='container'>
-<div id="available_graphs"></div>
-</div>
-
-<script>
+	<script>
 function save_graph_name(form)
 {
 	var base_graph_id = document.getElementById("base_graph_id").value;
@@ -77,7 +80,16 @@ function save_graph_name(form)
 }
 </script>
 
+</head>
 
+<body>
+<div class='container'>
+<div>
+	<button class="btn btn-success"onclick="redirect_save_graph()">Add a Base Graph</button>
+	<button class="btn btn-danger"onclick="logout()">Log Out</button>
+</div>
+<div id="available_graphs"></div>
+</div>
 <div>
 	<p>Enter the new graph name. If you enter an existing graph name which was a version of a standard base graph, it would be over written. If you write a new name, it would inherit the propertie of the graph selected from either of the above 2 drop downs. </p>
 	<form id="edit_graph_form" name="edit_graph_form" action="user_save_graph.php" method="post">

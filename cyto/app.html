@@ -20,6 +20,9 @@
 		<script src="cytoscape-cxtmenu.js"></script>
 		<script src="cytoscape-cxtmenu2.js"></script>
 		<link rel="stylesheet" href="//code.jquery.com/ui/1.11.2/themes/smoothness/jquery-ui.css">
+		<script type="text/javascript">
+			var cy;
+		</script>
 
 		<script src="graph_edit.js"></script>
 
@@ -27,7 +30,7 @@
 
 
 		<script>
-
+		$(function(){user_login();});
 			var graph_data;
 		    var graph_style;
 			var url = $(location).attr('href');
@@ -46,26 +49,34 @@
 			        else
 			        {
 			          	//alert(JSON.stringify(output.dataval));
-			          	var bfs = {
+			          	var layout_rand = {
+							// name : 'random'
+							// //circle : true//,
+							// //roots : ['k']
 							name : 'breadthfirst',
 							circle : true,
-							roots : ['k']
+							roots : ['n1']
 						};
+
 			        	graph_data = output.dataval.gdata;
 			        	graph_style = output.dataval.gstyle;
 
-			        	var cy = window.cy = cytoscape({
+			        	cy = window.cy = cytoscape({
 							container: document.getElementById('cy'),
 
 							ready: function(){
-									user_login();
+									// user_login();
 							},
 
 							style: graph_style,
 
-							layout: bfs,
+							elements: graph_data,
 
-							elements: graph_data
+							layout: layout_rand,
+							panningEnabled: true,
+							userPanningEnabled: true,
+							motionBlur: true,
+							boxSelectionEnabled: false
 						});
 
 						set_cxt_menu(cy);
@@ -156,8 +167,12 @@
 
 				set_cxt_menu(cy);
 				dump_my_changes(cy);*/
+				$("#layout_type").change(function(){
+				  set_layout($("#layout_type").val());
+				});
 
 			});
+		
 		</script>
 
 		<script type="text/javascript">
@@ -236,9 +251,36 @@
 		</div>
 		<button class="btn btn-success"onclick="add_dialog_open()">Add Node</button>
 		<button class="btn btn-success"onclick="add_e_dialog_open()">Add Edge</button>
+		<button class="btn btn-success"onclick="redirect_user_available_graphs()">Check Available Graphs</button>
 		<button class="btn btn-danger"onclick="logout()">Log Out</button>
-		
-			
+		<div class="row container">
+		<div class="col-md-2">
+		<label>Graph layout: </label>
+		</div>
+		<div class="col-md-3">
+		 <select id="layout_type" class="btn btn-default">
+			  <option value="random">Random</option>
+			  <option value="grid">Grid</option>
+			  <option value="breadthfirst">Breadth First</option>
+			  <option value="circle">Circle</option>
+			  <option value="preset">Preset</option>
+			  <option value="cose">Compound Spring Embedder</option>
+		</select> 
+		</div>
+		</div>
+
+		<form id="node_query" name="node_query" action="javascript:query_node()">
+			<div class="row container">
+			<div class="col-md-3">
+			<input type="text" placeholder="Element id to query" id="node_q" name="node_id1" class="text ui-widget-content ui-corner-all" required>
+			</div>
+			<div class="col-md-3">
+			<input type="submit" class="btn btn-success" value="Query"/>
+			</div>
+			</div>
+		</form>
+		</div>
+		</div>
 		<h1>Enjoy Your Graphs!</h1>
 		</div>
 
