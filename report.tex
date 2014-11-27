@@ -1,0 +1,327 @@
+\documentclass{beamer}
+\mode<presentation>
+
+\usetheme{Warsaw}
+
+\definecolor{RR}{RGB}{245,121,0}
+
+\setbeamercolor{title}{fg=RR,bg=green!20!white}
+
+\setbeamerfont{title}{shape=\itshape,family=\rmfamily}
+\usecolortheme{orchid}
+
+
+\title{User-based online Graph editing tool}
+\date{August 2014 - November 2014}
+\author{Utsav Sinha, Kundan Kumar, Vicki Anand}
+\institute{CS252 Project}
+
+\usepackage{amsthm}
+\usepackage{amsmath}
+%\usepackage[a4paper]{geometry}
+\usepackage{graphicx}
+\usepackage{enumerate}
+\usepackage{lipsum}
+\usepackage{tikz}
+\usepackage{verbatim}
+\usepackage[T1]{fontenc}
+\usepackage{mathptmx}
+
+\newtheorem*{theorem*}{Theorem}
+\newtheorem*{beautybox}{} 
+
+\begin{document}
+
+\begin{frame}
+\titlepage
+\end{frame}
+
+\begin{frame}[plain]
+\begin{figure}%
+\includegraphics[height=5cm]{bluelog.jpg}%
+\end{figure}%
+\end{frame}
+
+\begin{frame}
+\frametitle{Outline}
+\tableofcontents[pausesections]
+\end{frame}
+
+\section{Project Overview}
+
+\subsection{Cytoscape}
+\begin{frame}
+\frametitle{What is Cytoscape ?}
+
+Cytoscape is an open source bioinformatics software platform for visualizing molecular interaction networks and integrating with gene expression profiles and other state data. Cytoscape has a JavaScript-centric project named \emph{Cytoscape.js}.
+
+Cytoscape.js is an open-source graph library written in JavaScript which allows you to easily display and manipulate rich, interactive graphs along with graph analysis and visualisation.
+\end{frame}
+
+\begin{frame}
+\begin{figure}
+\centering
+\includegraphics[height=6cm]{front.jpg}
+\caption{Graph using Cytoscape\label{front_image}\cite{front_image}}
+\end{figure}
+\end{frame}
+
+
+\begin{frame}
+\frametitle{What this project is about ?}
+This projects creates a user based online graph editing tool using cytoscape.js and PHP with MongoDB as the backend database. Users can login into their accounts, create graphs and save their sessions which can be worked on later.
+\end{frame}
+
+\subsection{Motivation}
+\begin{frame}{Motivation}
+The project began with a quest to learn MongoDB and create a useful web application. \\
+Thanks to our mentor and guide, \emph{Prof Arnab Bhattacharya} for leading us to create a web plugin for \emph{cytoscape.js}. The project was a perfect match for honing our new learnt skills and acquire knowledge about this wonderful cytoscape tool.
+\end{frame}
+
+\subsection{Objectives}
+\begin{frame}[allowframebreaks]{Objectives}
+We are given a large graph, for eg. a DNA structure and individual researchers want to simulate the effects of their experiment by genetic recombination of the molecule. \\
+Since the base graph remains the same with minor modifications (in terms of changes in the graph), we need a tool so that users can easily make changes using an interactive GUI. Also, a user may wish to have several parallel versions of the same molecule and save them seperately. \\
+\framebreak
+
+Users may want to revert back to their earlier versions of graph, just like in version control \emph{git} or they may wish to work on other user's graph. \\
+This project help realize all these goals using a  simple easy to use graphical online tool. This tool uses cytoscape.js and all references to graph is made in cytoscape's context.
+\end{frame}
+
+\section{Implementation}
+
+\begin{frame}
+\begin{figure}
+\centering
+\includegraphics[height=5cm]{register.png}
+\label{fig:register}
+\caption{Register Interface}
+\end{figure}
+\end{frame}
+
+\subsection{Input}
+\begin{frame}{Inputs given}
+Users can switch from offline made graphs to this online tool by importing their graph data and style in \emph{JSON} format. This will save and create the graph. All further work can be done on the online tool itself.\\
+So after login, a user sees a list of all public projects (graphs) on which collaborative work can be done. A list of private versions of these graphs is also listed. A user can opt to overwrite an existing graph (of which he is the owner) or fork a new version of a previous work (both from the public and private list).
+\end{frame}
+
+\begin{frame}
+\begin{figure}
+\centering
+\includegraphics[height=4.5cm]{inputs.png}
+\label{fig:inputs}
+\caption{Interface for selecting graph}
+\end{figure}
+\end{frame}
+
+\subsection{Functionalities}
+\begin{frame}[allowframebreaks]{Functionalities Overview}
+After selecting the graph to work on, the user is redirected to the editing page where he can analyze the graph and edit the graph through the following operations:
+\begin{itemize}
+\item Add Node
+\item Add Edge
+\item Modify details
+\item Delete Node
+\item Delete Edge
+\end{itemize}
+\framebreak
+The last 3 operations (modifying and deleting nodes and edges) can be performed by right clicking on the appropriate node/edge which is to be modified which opens an interactive interface:
+\begin{itemize} 
+\item All Data: Used to display all data pertaining to the selected node through a popup
+\item Modify Details: Used to modify the data of the node
+\item Delete Node: Used to delete the node and all its incident edges
+\item Highlight Node: Used to hightlight the node with a different color; effect can be negated using de-hilight option
+\end{itemize}
+Simiarly, right clicking an edge offers similar functions but operational on edges instead of nodes.
+\end{frame}
+
+\begin{frame}{Adding nodes and Edges}
+Add Nodes and edges open up a popup which can store data with as many key value pairs as required using add more fields button. 
+Cytoscape stores nodes and edges as key value pairs. A typical node of a transportation graph with cities as nodes can be:
+\begin{table}[h!]
+\caption{City Node} 
+\centering
+\begin{tabular}{c c c}
+\hline\hline 
+Key & Value \\ [0.5ex] 
+
+\hline 
+Name & Kanpur \\ 
+Pin Code & 208016  \\
+State & U.P.  \\
+Airport & No  \\
+\hline
+\end{tabular}
+\label{table:node}
+\end{table}
+\end{frame}
+
+\begin{frame}
+\begin{figure}
+\centering
+\includegraphics[height=6cm]{add_node.jpeg}
+\label{fig:add_node}
+\caption{Adding Node}
+\end{figure}
+\end{frame}
+
+\begin{frame}
+\begin{figure}
+\centering
+\includegraphics[height=6cm]{add_edge.jpeg}
+\label{fig:add_edge}
+\caption{Adding Edge}
+\end{figure}
+\end{frame}
+
+\begin{frame}{Modifying nodes and Edges}
+The values entered in the nodes and edges can also be changed later on by right clicking on the appropriate node/edge and selecting \emph{Modify Details}. It opens up a popup like Figure \ref{fig:modify_node}
+
+\begin{figure}
+\centering
+\includegraphics[height=3cm]{modify_node.jpeg}
+\label{fig:modify_node}
+\caption{Modify Node}
+\end{figure}
+
+\end{frame}
+
+\begin{frame}{Seeing details of nodes and Edges}
+The data stored in the nodes and edges can be seen by right clicking on the appropriate node/edge and selecting \emph{All Data}. It opens up a popup like Figure \ref{fig:node_details}
+
+\begin{figure}
+\centering
+\includegraphics[height=3cm]{node_details.png}
+\label{fig:node_details}
+\caption{View Node Data}
+\end{figure}
+
+\end{frame}
+
+\subsection{Querying Graph}
+\begin{frame}{Querying Graph}
+Any node or edge in the graph can be focussed on in the editor by querying the element's unique id in the search box. This zooms the graph in or out depending upon the current zoom level and brings the element to the center of the screen. In case of node, color animation is also added for focussing. This feature is particularly useful when the graph becomes too large and finding the node/edge manually becomes difficult.
+\begin{figure}
+\centering
+\includegraphics[height=3cm]{query_node.png}
+\label{fig:query_node}
+\caption{Query Node}
+\end{figure}
+
+\end{frame}
+
+\subsection{Appearance}
+\begin{frame}{Appearance}
+Users can change the layout of the graph on the editor workspace in a variety of ways using the graph layout options. The available layouts include:
+\begin{itemize}
+\item Random
+\item Grid
+\item Breadth First
+\item Circle
+\item Preset
+\item Compound Spring Embedder
+\end{itemize}
+Depending upon the type of graph, different layouts can be used to best suit the data and provide it the most appealing visualization.
+Also, if the graph goes out of view due to zooming or other reasons, then these options helps to rescale the graph on the editor quickly.
+\end{frame}
+
+\begin{frame}
+\begin{figure}
+\centering
+\includegraphics[height=6cm]{circle_graph.png}
+\label{fig:circle_graph}
+\caption{Circle Layout Graph}
+\end{figure}
+\end{frame}
+
+\begin{frame}
+\begin{figure}
+\centering
+\includegraphics[height=6cm]{editor_interface.png}
+\label{fig:editor_interface}
+\caption{Editor Interface}
+\end{figure}
+\end{frame}
+
+\subsection{Version Control}
+\begin{frame}{Version Control}
+There are 2 types of graphs:
+\begin{itemize}
+\item Public Graphs: Any user can create a graph (using Import Graph feature or otherwise) and share it as a base parent graph. Other users can create versions out of it.
+\item Private Versions: Users can create versions of public graphs which he can work on privately without sharing. These can later be made public.
+\end{itemize}
+Users can change create and store various versions of the same graph. At any time, the user can click on \emph{Check Available Graphs} and see all pulic graphs as well as private versions of his modified graphs.
+\end{frame}
+
+
+\section{Methods Used}
+\subsection{MongoDB database}
+\begin{frame}{Database: MongoDB}
+MongoDB \cite{database} was our database of choice since:
+\begin{itemize}
+\item It is schema-less and would handle all different types of graph representations (using key-value pairs in cytoscape) well
+\item cytoscape uses JSON for data representation and MongoDB can store the data in \textbf{JSON} format directly
+\item MongoDB also offers the facility of creating databases and tables (\emph{collections}) on the fly which was very effective for version control
+\end{itemize}
+\end{frame}
+
+\subsection{PHP and Javascript}
+\begin{frame}[allowframebreaks]{Backend: PHP}
+PHP was used at the backend to make the editor tool along with creating the login and registration pages.
+
+\begin{itemize}
+\item The cytoscape graph was stored in a \texttt{<div>} tag and a \texttt{cytoscape()} element named \emph{cy} was attached to it
+\item The element \emph{cy} was later used for all references to the cytoscape graph
+\item HTML forms for adding nodes/edges were handled with PHP which queried the MongoDB for storing the changes
+\item Only log of changes were stored in accordance to version control
+\item The interactive interface on right-clicking graph elements or the context menu \cite{context_menu} was created using jQuery and CSS 
+\item Clicking on Delete Node/Edge deletes the element from the graph using the \textbf{cy} variable. The corresponding change is stored in the MongoDB database
+\item AJAX requests were made to respective PHP scripts for storing log in database whenever a add/modify/delete request of a graph element is made
+\item The changes on the graph were visible instantly and were handled by the cytoscape.js API \cite{cytoscape_API}
+\end{itemize}
+
+\end{frame}
+
+
+\begin{frame}{PHP MongoDB Connection}
+MongoDB was integrated with PHP using \texttt{MongoClient()} method
+
+\begin{itemize}
+\item All versions of a graph created a seperate collection (table) in the database
+\item The list of all graphs were stored in a seperate \texttt{user\_graphs} collection for lookup purposes
+\item Tables were uniquely itentified using the user login credentials, graph which is worked upon and the version information
+\item \texttt{find()}, \texttt{remove()}, \texttt{count()} and \texttt{insert()} commands were used for querying, deleting, inserting and updating information from the PHP script
+\item Javascript and jQuery was used to call the PHP scripts using \emph{AJAX} POST method
+\end{itemize}
+
+\end{frame}
+
+\subsection{Styling}
+\begin{frame}{Style}
+Bootstrap \cite{style} was used to style the web tool.
+
+\begin{itemize}
+\item Custom made CSS was used to create animation effects using jQuery for focussing on graph elements
+\item Popup dialog boxes for filling forms for adding/modifying/viewing graph elements were created using jQuery \cite{animation} and CSS
+\item The forms, the login/registration page and overall styling was done using bootstrap 
+\item Graph Layouts were added using the pre-defined functions in \emph{cytoscape.js} API\cite{cytoscape_API}
+
+\end{itemize}
+
+\end{frame}
+
+
+\section{References}
+\begin{frame}
+    \bibliographystyle{alpha}
+    \bibliography{cs252_project.bib}
+\end{frame}
+
+\end{document}
+
+
+
+
+
+
+
