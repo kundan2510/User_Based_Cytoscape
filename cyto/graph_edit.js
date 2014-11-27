@@ -63,7 +63,8 @@ function redirect_user_available_graphs()
 	$(location).attr('href',"user_available_graphs.html");
 }
 
-
+ var native_color;
+ var i = 0;
 function set_cxt_menu(cy)
 {
 
@@ -73,6 +74,10 @@ function set_cxt_menu(cy)
 				content: '<span class="fa fa-flash fa-2x"></span>',
 				select: function(){
 					console.log( this.id() );
+					if(i == 1)
+					{
+						this.css("background-color",native_color);
+					}
 				}
 			},
 
@@ -80,6 +85,12 @@ function set_cxt_menu(cy)
 				content: '<span class="fa fa-star fa-2x"></span>',
 				select: function(){
 					console.log( this.data('name') );
+					if(i == 0)
+					{
+						native_color = this.css("background-color");
+					}
+					i = 1;
+					this.css("background-color","blue");
 					//cy.remove(this);
 				}
 			},
@@ -115,20 +126,20 @@ function set_cxt_menu(cy)
 
 	cy.cxtmenu2({
 		commands: [
-			{
-				content: '<span class="fa fa-flash fa-2x"></span>',
-				select: function(){
-					console.log( this.id() );
-				}
-			},
+			// {
+			// 	content: '<span class="fa fa-flash fa-2x"></span>',
+			// 	select: function(){
+			// 		console.log( this.id() );
+			// 	}
+			// },
 
-			{
-				content: '<span class="fa fa-star fa-2x"></span>',
-				select: function(){
-					console.log( this.data('name') );
-					//cy.remove(this);
-				}
-			},
+			// {
+			// 	content: '<span class="fa fa-star fa-2x"></span>',
+			// 	select: function(){
+			// 		console.log( this.data('name') );
+			// 		//cy.remove(this);
+			// 	}
+			// },
 			{
 				content: 'Delete Edge',
 				select: function(){

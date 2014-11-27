@@ -9,7 +9,7 @@
 	   $cursor = $collection->find();
 	   $flag = 0;
 	   $data = "Available Base graphs are :<br>";
-	   $data .= "<select id='base_graph_id' name='base_graph_name'><option value=''></option>";
+	   $data .= "<select id='base_graph_id' class = 'btn btn-default' name='base_graph_name'><option value=''></option>";
 	   foreach ($cursor as $document) 
 	   {
 			if ( $document["type"] == "base" )
@@ -20,7 +20,7 @@
 	   }
 	   $data .= "</select>";
 	   $data .= "<br/>My versioned graphs:<br/>";
-	   $data .= "<select id='version_graph_id' name='version_graph_name'><option value=''></option>";
+	   $data .= "<select id='version_graph_id' class = 'btn btn-default' name='version_graph_name'><option value=''></option>";
 
 	   $cursor = $collection->find(array("user" => "$user"));
 	   foreach ($cursor as $document) 

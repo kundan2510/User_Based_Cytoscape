@@ -8,8 +8,38 @@
 	<script src="../bootstrap/js/bootstrap.min.js"> </script>
 
 	<link href="../bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
-
+	<style type="text/css">
+	#base_graph_id{
+		min-width: 400
+	}
+	#version_graph_id{
+		min-width: 400
+	}
+	</style>
 	<script>
+	function user_login()
+	{
+	    $.post("login_success.php",function(result){
+	      var output = jQuery.parseJSON( result );
+	      //alert(result);
+	      if(output.stat == 1 )
+	      {
+		        $('#user_logged').html("<h3>Welcome "+output.user+"</h3>");
+		        var url = $(location).attr('href');
+				var name = url.split("?")[2].split("=")[1];
+				$('#graph_name_displayer').html(name);
+
+	      }
+	      else if(output.stat == 0)
+	      {
+	      	$(location).attr('href',"../login.html");
+	      }
+	      else
+	      {
+	      	alert("BUG : stat set wrongly to: " + output.stat);
+	      }
+	    });
+	}
 	function logout()
 	{
 		$.post("logout.php",function(result){
@@ -38,7 +68,7 @@
 	    });
 	  }
 
-	  $(document).ready(get_graph_list());
+	  $(document).ready(function(){get_graph_list();user_login();});
 
 	</script>
 
@@ -84,12 +114,13 @@ function save_graph_name(form)
 
 <body>
 <div class='container'>
+<div id='user_logged'> </div>
 <div>
 	<button class="btn btn-success"onclick="redirect_save_graph()">Add a Base Graph</button>
 	<button class="btn btn-danger"onclick="logout()">Log Out</button>
 </div>
 <div id="available_graphs"></div>
-</div>
+
 <div>
 	<p>Enter the new graph name. If you enter an existing graph name which was a version of a standard base graph, it would be over written. If you write a new name, it would inherit the propertie of the graph selected from either of the above 2 drop downs. </p>
 	<form id="edit_graph_form" name="edit_graph_form" action="user_save_graph.php" method="post">
@@ -105,6 +136,6 @@ function save_graph_name(form)
 	E-mail: <input type="text" name="email"><br>
 	<input type="submit">
 	</form> -->
-
+</div>
 </body>
 </html>
